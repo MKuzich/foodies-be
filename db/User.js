@@ -49,6 +49,7 @@ const User = sequelize.define(
 
 User.prototype.toPublicJSON = function () {
     return {
+        id: this.id,
         name: this.name,
         email: this.email,
         avatarURL: this.avatarURL,
