@@ -4,6 +4,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import "./db/sequelize.js";
+import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import recipeRouter from "./routes/recipeRouter.js";
 
@@ -14,7 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use("/api/auth", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/recipes", recipeRouter);
 
 app.use((_, res) => {

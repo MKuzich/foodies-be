@@ -89,3 +89,15 @@ export const resendVerifyUser = async email => {
 
     await sendEmail(verifyEmail);
 }
+
+export const getUserInfo = async query => {
+    try {
+        const user = await findUser(query);
+        if (!user) {
+            return null
+        }
+        return user.toPublicJSON();
+    } catch (error) {
+        throw error;
+    }
+}
