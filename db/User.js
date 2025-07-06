@@ -1,9 +1,56 @@
-import { DataTypes } from "sequelize";
-
+import {DataTypes} from "sequelize";
 import sequelize from "./sequelize.js";
+import {emailRegexp} from "../constants/user.js";
 
-const User = sequelize.define("user", {});
+const User = sequelize.define(
+    "user",
+    {
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                is: emailRegexp,
+            },
+            unique: {
+                args: true,
+                msg: "Email in use",
+            },
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        token: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: null,
+        },
+        avatarURL: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        verify: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        verificationToken: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+    },
+    {
+        tableName: "users",
+    }
+);
 
-// User.sync({ alter: true });
+User.prototype.toPublicJSON = function () {
+    return {
+        email: this.email,
+        avatarURL: this.avatarURL,
+    };
+};
+
+// User.sync({alter: true});
 
 export default User;
+
