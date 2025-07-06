@@ -5,6 +5,10 @@ import {emailRegexp} from "../constants/user.js";
 const User = sequelize.define(
     "user",
     {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -45,6 +49,7 @@ const User = sequelize.define(
 
 User.prototype.toPublicJSON = function () {
     return {
+        name: this.name,
         email: this.email,
         avatarURL: this.avatarURL,
     };

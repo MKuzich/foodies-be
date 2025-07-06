@@ -40,8 +40,8 @@ export const registerUser = async payload => {
 }
 
 export const loginUser = async ({email, password}) => {
-    const user = await findUser({email, verify: true});
-    if (!user) throw HttpError(401, "Email or password is wrong or user is not verify");
+    const user = await findUser({email});
+    if (!user) throw HttpError(401, "Email or password is wrong");
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
