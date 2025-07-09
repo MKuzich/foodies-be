@@ -50,7 +50,7 @@ export const updateAvatar = async (req, res) => {
         res.json({avatarURL});
     } catch (error) {
         await unlink(req.file.path);
-        throw HttpError(500);
+        throw HttpError(500, "File upload error");
     }
 };
 
