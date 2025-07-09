@@ -67,11 +67,15 @@ export const logoutUser = async ({id}) => {
 }
 
 export const updateAvatar = async (id, avatar) => {
-    const user = await findUser({id});
-    if (!user) throw HttpError(404, "User not found");
+    try {
+        const user = await findUser({id});
+        if (!user) throw HttpError(404, "User not found");
 
-    user.avatarURL = avatar;
-    await user.save();
+        user.avatarURL = avatar;
+        await user.save();
+    } catch (error) {
+        throw HttpError(500, error.message);
+    }
 };
 
 export const verifyUser = async verificationToken => {
@@ -98,6 +102,6 @@ export const getUserInfo = async query => {
         }
         return user.toPublicJSON();
     } catch (error) {
-        throw error;
+        throw HttpError(500, error.message);
     }
 }
