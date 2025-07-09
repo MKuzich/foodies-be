@@ -1,7 +1,7 @@
 import express from "express";
 import authenticate from "../middlewares/authenticate.js";
 import controllers from "../controllers/recipeController.js";
-import { updateStatusSchema } from "../schemas/contactsSchemas.js";
+import { updateStatusSchema } from "../schemas/recipeSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 
 const recipeRouter = express.Router();
