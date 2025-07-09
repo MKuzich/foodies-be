@@ -6,6 +6,5 @@ export async function extractedSeedFile(filename) {
     return await fs.readFile(path.resolve('seeders', 'data', filename), 'utf8');
   } catch (error) {
     console.error(`❌ Error reading file: ${filename}`, error);
-    process.exit(1);
   }
 }
