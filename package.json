@@ -7,7 +7,7 @@
     "build": "npm run build-docs",
     "build-docs": "redocly bundle --ext json -o docs/swagger.json",
     "preview-docs": "redocly preview-docs",
-    "seed": "node seeders/seed.js"
+    "seed": "node seeders/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -1,10 +1,10 @@
-import bcrypt from "bcrypt";
 import gravatar from "gravatar";
 import { nanoid } from "nanoid";
 import User from "../db/User.js";
 import { createToken } from "../helpers/jwt.js";
 import HttpError from "../helpers/httpError.js";
 import sendEmail from "../helpers/sendEmail.js";
+import {comparePasswords, hashPassword} from "../helpers/hash.js";
 
 const { APP_DOMAIN } = process.env;
 
@@ -21,7 +21,7 @@ export const findUser = (query) => {
 };
 
 export const registerUser = async (payload) => {
-  const hashPassword = await bcrypt.hash(payload.password, 10);
+  const hashedPassword = await hashPassword(payload.password);
   const verificationToken = nanoid();
 
   const avatarURL = gravatar.url(
@@ -32,7 +32,7 @@ export const registerUser = async (payload) => {
 
   const user = await User.create({
     ...payload,
-    password: hashPassword,
+    password: hashedPassword,
     avatarURL,
     verificationToken,
   });
@@ -51,7 +51,7 @@ export const loginUser = async ({ email, password }) => {
   const user = await findUser({ email });
   if (!user) throw HttpError(401, "Email or password is wrong");
 
-  const passwordCompare = await bcrypt.compare(password, user.password);
+  const passwordCompare = await comparePasswords(password, user.password);
   if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
 
   const payload = { id: user.id };
