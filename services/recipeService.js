@@ -4,7 +4,7 @@ export const allRecipes = async (query) => {
   return Recipe.findAll({ where: query });
 };
 
-export const getContactById = async (query) => {
+export const getRecipeById = async (query) => {
   return Recipe.findOne({ where: query });
 };
 
