@@ -1,34 +1,34 @@
-import express from "express";
+import express from 'express';
 
-import authenticate from "../middlewares/authenticate.js";
-import validateId from "../middlewares/validateId.js";
-import followControllers from "../controllers/followController.js";
+import authenticate from '../middlewares/authenticate.js';
+import validateId from '../middlewares/validateId.js';
+import followControllers from '../controllers/followController.js';
 
 const followRouter = express.Router();
 
 followRouter.get(
-  "/:id/following",
+  '/:id/following',
   authenticate,
   validateId,
   followControllers.getFollowingController
 );
 
 followRouter.get(
-  "/:id/followers",
+  '/:id/followers',
   authenticate,
   validateId,
   followControllers.getFollowersController
 );
 
 followRouter.post(
-  "/:id/follow",
+  '/:id/follow',
   authenticate,
   validateId,
   followControllers.followUserController
 );
 
 followRouter.delete(
-  "/:id/unfollow",
+  '/:id/unfollow',
   authenticate,
   validateId,
   followControllers.unfollowUserController

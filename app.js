@@ -19,7 +19,7 @@ app.use(express.static('public'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
-app.use("/api/users", followRouter);
+app.use('/api/users', followRouter);
 app.use('/api/recipes', recipeRouter);
 app.use('/api/categories', categoriesRouter);
 

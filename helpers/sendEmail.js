@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 const { MAIL_EMAIL, MAIL_PASSWORD } = process.env;
 
 const nodemailerConfig = {
-  host: "smtp.ukr.net",
+  host: 'smtp.ukr.net',
   port: 465,
   secure: true,
   auth: {
