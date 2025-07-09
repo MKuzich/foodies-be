@@ -1,4 +1,4 @@
-import Recipe from "../db/Recipe";
+import Recipe from '../db/Recipe.js';
 
 export const allRecipes = async (query) => {
   return Recipe.findAll({ where: query });
