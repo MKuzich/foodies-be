@@ -44,7 +44,6 @@ export const updateAvatar = async (req, res) => {
         avatarURL = url;
         await unlink(req.file.path);
     } catch (error) {
-        console.log('Here:', error);
         await unlink(req.file.path);
         throw HttpError(500, error.message);
     }
