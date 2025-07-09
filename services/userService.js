@@ -45,7 +45,7 @@ export const registerUser = async (payload) => {
   await sendEmail(verifyEmail);
 
   return user.toPublicJSON();
-};
+}
 
 export const loginUser = async ({ email, password }) => {
   const user = await findUser({ email });
@@ -65,41 +65,54 @@ export const loginUser = async ({ email, password }) => {
     token,
     user: user.toPublicJSON(),
   };
-};
+}
 
 export const logoutUser = async ({ id }) => {
-  const user = await findUser({ id });
-  if (!user) throw HttpError(401, "User not found");
-  user.token = "";
-  await user.save();
-};
+    try {
+        const user = await findUser({id});
+        if (!user) throw HttpError(401, "User not found");
+        user.token = "";
+        await user.save();
+    } catch (error) {
+        throw HttpError(500, error.message);
+    }
+}
 
 export const updateAvatar = async (id, avatar) => {
-  const user = await findUser({ id });
-  if (!user) throw HttpError(404, "User not found");
+  try {
+        const user = await findUser({id});
+        if (!user) throw HttpError(404, "User not found");
 
-  user.avatarURL = avatar;
-  await user.save();
-};
+        user.avatarURL = avatar;
+        await user.save();
+    } catch (error) {
+        throw HttpError(500, error.message);
+    }
+}
 
 export const verifyUser = async (verificationToken) => {
-  const user = await findUser({ verificationToken });
-  if (!user) throw HttpError(404, "User not found");
+  try {
+        const user = await findUser({verificationToken});
+        if (!user) throw HttpError(404, "User not found");
 
-  return user.update({ verify: true, verificationToken: null });
-};
+        return user.update({verify: true, verificationToken: null});
+    } catch (error) {
+        throw HttpError(500, error.message);
+    }
+}
 
 export const resendVerifyUser = async (email) => {
-  const user = await findUser({ email, verify: false });
-  if (!user) throw HttpError(401, "Email not found or already verified");
+  try {
+        const user = await findUser({email, verify: false});
+        if (!user) throw HttpError(401, "Email not found or already verified");
 
-  const verifyEmail = createVerifyEmail({
-    email,
-    verificationToken: user.verificationToken,
-  });
+        const verifyEmail = createVerifyEmail({email, verificationToken: user.verificationToken});
 
-  await sendEmail(verifyEmail);
-};
+        await sendEmail(verifyEmail);
+    } catch (error) {
+        throw HttpError(500, error.message);
+    }
+}
 
 export const getUserInfo = async (query) => {
   try {
@@ -109,6 +122,6 @@ export const getUserInfo = async (query) => {
     }
     return user.toPublicJSON();
   } catch (error) {
-    throw error;
+    throw HttpError(500, error.message);
   }
-};
+}

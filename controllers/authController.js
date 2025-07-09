@@ -35,23 +35,22 @@ export const updateAvatar = async (req, res) => {
     if (!req.file) {
         throw HttpError(404, "No file uploaded");
     }
+    let avatarURL = null;
     try {
-        let avatarURL = null;
-
         const {url} = await cloudinary.uploader.upload(req.file.path, {
             folder: "avatars",
             use_filename: true,
         });
         avatarURL = url;
         await unlink(req.file.path);
-
-        await userService.updateAvatar(id, avatarURL);
-
-        res.json({avatarURL});
     } catch (error) {
         await unlink(req.file.path);
-        throw HttpError(500);
+        throw HttpError(500, error.message);
     }
+
+    await userService.updateAvatar(id, avatarURL);
+
+    res.json({avatarURL});
 };
 
 const verifyController = async (req, res) => {
