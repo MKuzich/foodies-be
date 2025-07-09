@@ -67,7 +67,7 @@ export const loginUser = async ({ email, password }) => {
   };
 };
 
-export const logoutUser = async ({id}) => {
+export const logoutUser = async ({ id }) => {
     try {
         const user = await findUser({id});
         if (!user) throw HttpError(401, "User not found");
@@ -106,8 +106,7 @@ export const resendVerifyUser = async (email) => {
         const user = await findUser({email, verify: false});
         if (!user) throw HttpError(401, "Email not found or already verified");
 
-        const verifyEmail = createVerifyEmail({email, verificationToken: user.verificationToken,
-  });
+        const verifyEmail = createVerifyEmail({email, verificationToken: user.verificationToken});
 
         await sendEmail(verifyEmail);
     } catch (error) {
