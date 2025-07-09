@@ -7,6 +7,7 @@ import "./db/sequelize.js";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import recipeRouter from "./routes/recipeRouter.js";
+import followRouter from "./routes/followRoutes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.static("public"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/users", followRouter);
 app.use("/api/recipes", recipeRouter);
 
 app.use((_, res) => {

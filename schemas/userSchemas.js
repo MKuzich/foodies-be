@@ -16,8 +16,13 @@ export const authEmailSchema = Joi.object({
     email: Joi.string().pattern(emailRegexp).required(),
 })
 
+// export const followBodySchema = Joi.object({
+//   userId: Joi.number().integer().positive().required(),
+// });
+
 export default {
     authRegisterSchema,
     authLoginSchema,
     authEmailSchema,
+    // followBodySchema,
 };
