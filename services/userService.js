@@ -45,7 +45,7 @@ export const registerUser = async (payload) => {
   await sendEmail(verifyEmail);
 
   return user.toPublicJSON();
-};
+}
 
 export const loginUser = async ({ email, password }) => {
   const user = await findUser({ email });
@@ -65,7 +65,7 @@ export const loginUser = async ({ email, password }) => {
     token,
     user: user.toPublicJSON(),
   };
-};
+}
 
 export const logoutUser = async ({ id }) => {
     try {
@@ -88,7 +88,7 @@ export const updateAvatar = async (id, avatar) => {
     } catch (error) {
         throw HttpError(500, error.message);
     }
-};
+}
 
 export const verifyUser = async (verificationToken) => {
   try {
@@ -124,4 +124,4 @@ export const getUserInfo = async (query) => {
   } catch (error) {
     throw HttpError(500, error.message);
   }
-};
+}
