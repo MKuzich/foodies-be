@@ -1,13 +1,13 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 
-const Category = sequelize.define('category', {
+const Area = sequelize.define('area', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
-// Category.sync();
+// Area.sync();
 
-export default Category;
+export default Area;
