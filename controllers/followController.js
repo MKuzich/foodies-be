@@ -7,8 +7,8 @@ const getFollowersController = async (req, res) => {
   res.json(followers);
 };
 const getFollowingController = async (req, res) => {
-  const { id } = req.params;
-  const following = await followService.getFollowing(id);
+  const userId = req.user.id;
+  const following = await followService.getFollowing(userId);
   res.json(following);
 };
 

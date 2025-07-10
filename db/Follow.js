@@ -7,15 +7,31 @@ const Follow = sequelize.define(
     followerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      primaryKey: true,
     },
     followingId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      primaryKey: true,
     },
   },
   {
     tableName: 'follows',
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['followerId', 'followingId'],
+      },
+    ],
   }
 );
 
