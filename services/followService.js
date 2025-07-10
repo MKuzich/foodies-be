@@ -39,7 +39,7 @@ export const getFollowing = async (userId) => {
 
 export const followUser = async (followerId, followingId) => {
   if (followerId === followingId)
-    throw HttpError(400, 'You can\'t follow yourself');
+    throw HttpError(400, "You can't follow yourself");
 
   const userToFollow = await findUserWithOptions({ id: followingId });
   if (!userToFollow) throw HttpError(404, 'User not found');
