@@ -1,17 +1,7 @@
-import { nanoid } from 'nanoid';
 import User from '../db/User.js';
 import { createToken } from '../helpers/jwt.js';
 import HttpError from '../helpers/httpError.js';
-import sendEmail from '../helpers/sendEmail.js';
 import { comparePasswords, hashPassword } from '../helpers/hash.js';
-
-const { APP_DOMAIN } = process.env;
-
-const createVerifyEmail = ({ email, verificationToken }) => ({
-  to: email,
-  subject: 'Verify email',
-  html: `<a href="${APP_DOMAIN}/api/auth/verify/${verificationToken}" target="_blank">Click verify email</a>`,
-});
 
 export const findUser = (query) => {
   return User.findOne({
@@ -21,20 +11,11 @@ export const findUser = (query) => {
 
 export const registerUser = async (payload) => {
   const hashedPassword = await hashPassword(payload.password);
-  const verificationToken = nanoid();
 
   const user = await User.create({
     ...payload,
     password: hashedPassword,
-    verificationToken,
   });
-
-  const verifyEmail = createVerifyEmail({
-    email: payload.email,
-    verificationToken,
-  });
-
-  await sendEmail(verifyEmail);
 
   return user.toPublicJSON();
 };
@@ -77,33 +58,6 @@ export const updateAvatar = async (id, avatar) => {
 
     user.avatarURL = avatar;
     await user.save();
-  } catch (error) {
-    throw HttpError(500, error.message);
-  }
-};
-
-export const verifyUser = async (verificationToken) => {
-  try {
-    const user = await findUser({ verificationToken });
-    if (!user) throw HttpError(404, 'User not found');
-
-    return user.update({ verify: true, verificationToken: null });
-  } catch (error) {
-    throw HttpError(500, error.message);
-  }
-};
-
-export const resendVerifyUser = async (email) => {
-  try {
-    const user = await findUser({ email, verify: false });
-    if (!user) throw HttpError(401, 'Email not found or already verified');
-
-    const verifyEmail = createVerifyEmail({
-      email,
-      verificationToken: user.verificationToken,
-    });
-
-    await sendEmail(verifyEmail);
   } catch (error) {
     throw HttpError(500, error.message);
   }
