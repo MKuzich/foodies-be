@@ -30,5 +30,6 @@ const processDataId = async (fileName) => {
   updateData(fileName, items);
 };
 
-// processDataId('areas.json');
+processDataId('areas.json');
+processDataId('categories.json');
 processRecipes();
