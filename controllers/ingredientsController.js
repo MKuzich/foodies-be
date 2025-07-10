@@ -5,7 +5,7 @@ import HttpError from '../helpers/httpError.js';
 const getAllIngredients = async (req, res) => {
   const ingredients = await ingredientsService.getAllIngredients();
   if (!ingredients) {
-    throw HttpError(404, 'Areas not found');
+    throw HttpError(404, 'Ingredients not found');
   }
   res.json(ingredients);
 };
