@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
-import sequelize from "./sequelize.js";
+import sequelize from './sequelize.js';
 
-const Recipe = sequelize.define("recipe", {});
+const Recipe = sequelize.define('recipe', {});
 
 // Recipe.sync({ alter: true });
 
