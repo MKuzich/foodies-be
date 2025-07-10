@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import gravatar from 'gravatar';
 import { nanoid } from 'nanoid';
 import User from '../db/User.js';
 import { createToken } from '../helpers/jwt.js';
@@ -24,16 +23,9 @@ export const registerUser = async (payload) => {
   const hashPassword = await bcrypt.hash(payload.password, 10);
   const verificationToken = nanoid();
 
-  const avatarURL = gravatar.url(
-    payload.email,
-    { s: '200', r: 'pg', d: 'identicon' },
-    true
-  );
-
   const user = await User.create({
     ...payload,
     password: hashPassword,
-    avatarURL,
     verificationToken,
   });
 
