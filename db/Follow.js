@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import sequelize from "./sequelize.js";
+import { DataTypes } from 'sequelize';
+import sequelize from './sequelize.js';
 
 
 const Follow = sequelize.define(
-  "follow",
+  'follow',
   {
     followerId: {
       type: DataTypes.INTEGER,
@@ -25,7 +25,7 @@ const Follow = sequelize.define(
     },
   },
   {
-    tableName: "follows",
+    tableName: 'follows',
     timestamps: false,
     indexes: [
       {

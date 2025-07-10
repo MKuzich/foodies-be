@@ -17,7 +17,7 @@ export const getFollowers = async (userId) => {
     },
   });
 
-  if (!userWithFollowers) throw HttpError(404, "User not found");
+  if (!userWithFollowers) throw HttpError(404, 'User not found');
 
   return userWithFollowers.Followers || [];
 };
@@ -37,7 +37,7 @@ export const getFollowing = async (userId) => {
     }
   );
 
-  if (!userWithFollowing) throw HttpError(404, "User not found");
+  if (!userWithFollowing) throw HttpError(404, 'User not found');
 
   return userWithFollowing.Following || [];
 };
@@ -48,7 +48,7 @@ export const followUser = async (followerId, followingId) => {
     throw HttpError(400, "You can't follow yourself");
 
   const userToFollow = await findUserWithOptions({ id: followingId });
-  if (!userToFollow) throw HttpError(404, "User not found");
+  if (!userToFollow) throw HttpError(404, 'User not found');
 
   const [follow, created] = await Follow.findOrCreate({
     where: { followerId, followingId },
@@ -59,7 +59,7 @@ export const followUser = async (followerId, followingId) => {
 
 export const unfollowUser = async (followerId, followingId) => {
   const unfollow = await Follow.destroy({ where: { followerId, followingId } });
-  if (!unfollow) throw HttpError(404, "Not following this user");
+  if (!unfollow) throw HttpError(404, 'Not following this user');
 
   return { success: true };
 };

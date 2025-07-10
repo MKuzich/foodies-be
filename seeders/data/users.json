@@ -1,0 +1,20 @@
+[
+  {
+    "name": "GoIT",
+    "avatar": null,
+    "email": "goit@gmail.com",
+    "password": "test@gmail.com"
+  },
+  {
+    "name": "Foodies user",
+    "avatar": null,
+    "email": "user@gmail.com",
+    "password": "test@gmail.com"
+  },
+  {
+    "name": "Larry Pageim",
+    "avatar": null,
+    "email": "larry@gmail.com",
+    "password": "test@gmail.com"
+  }
+]
