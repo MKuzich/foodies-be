@@ -1,6 +1,5 @@
-import Follow from "../db/Follow.js";
+import { User, Follow } from "../db/index.js";
 import HttpError from "../helpers/httpError.js";
-
 
 export const findUserWithOptions = (where, options = {}) => {
   return User.findOne({
@@ -12,7 +11,7 @@ export const getFollowers = async (userId) => {
   const userWithFollowers = await findUserWithOptions({
     where: { id: userId },
     include: {
-      model: Follow,
+      model: User,
       as: "followers",
       attributes: ["id", "name", "email", "avatarURL"],
     },
@@ -24,19 +23,25 @@ export const getFollowers = async (userId) => {
 };
 
 export const getFollowing = async (userId) => {
-  const userWithFollowing = await findUserWithOptions({
-    where: { id: userId },
-    include: {
-      model: Follow,
-      as: "following",
-      attributes: ["id", "name", "email", "avatarURL"],
-    },
-  });
+  const userWithFollowing = await findUserWithOptions(
+    { id: userId },
+    {
+      include: [
+        {
+          model: User,
+          as: "Following", 
+          attributes: ["id", "name", "email", "avatarURL"],
+          through: { attributes: [] }, 
+        },
+      ],
+    }
+  );
 
   if (!userWithFollowing) throw HttpError(404, "User not found");
 
   return userWithFollowing.Following || [];
 };
+
 
 export const followUser = async (followerId, followingId) => {
   if (followerId === followingId)
@@ -45,12 +50,10 @@ export const followUser = async (followerId, followingId) => {
   const userToFollow = await findUserWithOptions({ id: followingId });
   if (!userToFollow) throw HttpError(404, "User not found");
 
-  const following = await Follow.findOne({
+  const [follow, created] = await Follow.findOrCreate({
     where: { followerId, followingId },
   });
-  if (following) throw HttpError(409, "Already following this user");
-
-  await Follow.create({ followerId, followingId });
+  if (!created) throw HttpError(409, "Already following this user");
   return { success: true };
 };
 
