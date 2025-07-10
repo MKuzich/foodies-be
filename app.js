@@ -9,6 +9,7 @@ import userRouter from './routes/userRouter.js';
 import recipeRouter from './routes/recipeRouter.js';
 import followRouter from './routes/followRoutes.js';
 import categoriesRouter from './routes/categoriesRouter.js';
+import testimonialsRouter from './routes/testimonialsRouter.js';
 
 const app = express();
 
@@ -19,9 +20,10 @@ app.use(express.static('public'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
-app.use("/api/users", followRouter);
+app.use('/api/users', followRouter);
 app.use('/api/recipes', recipeRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/testimonials', testimonialsRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Route not found' });

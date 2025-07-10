@@ -1,6 +1,6 @@
-import * as recipeService from "../services/recipeService.js";
-import HttpError from "../helpers/httpError.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import * as recipeService from '../services/recipeService.js';
+import HttpError from '../helpers/httpError.js';
+import ctrlWrapper from '../decorators/ctrlWrapper.js';
 
 export const getAllRecipes = async (req, res) => {
   const { id } = req.user;
@@ -25,7 +25,7 @@ export const updateRecipeStatus = async (req, res) => {
     req.body
   );
   if (!result) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, 'Not found');
   }
 
   res.json(result);

@@ -7,7 +7,9 @@
     "build": "npm run build-docs",
     "build-docs": "redocly bundle --ext json -o docs/swagger.json",
     "preview-docs": "redocly preview-docs",
-    "seed": "node seeders/seed.js"
+    "seed": "node seeders/seed.js",
+    "lint": "eslint ./ --ext js,jsx --max-warnings 0 --fix",
+    "format": "prettier --write ./"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -27,7 +29,12 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.30.1",
     "@redocly/cli": "^1.34.4",
-    "nodemon": "^3.0.2"
+    "eslint": "^9.30.1",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.3.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.6.2"
   }
 }
