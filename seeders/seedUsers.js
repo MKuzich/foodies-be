@@ -1,7 +1,7 @@
 import User from '../db/User.js';
 import bcrypt from 'bcrypt';
-import {extractedSeedFile} from './utils.js';
-import {hashPassword} from "../helpers/hash.js";
+import { extractedSeedFile } from './utils.js';
+import { hashPassword } from '../helpers/hash.js';
 
 export async function seedUsers() {
   try {
@@ -9,10 +9,10 @@ export async function seedUsers() {
     const usersData = JSON.parse(data);
 
     const hashedUsers = await Promise.all(
-        usersData.map(async user => ({
-          ...user,
-          password: await hashPassword(user.password),
-        }))
+      usersData.map(async (user) => ({
+        ...user,
+        password: await hashPassword(user.password),
+      }))
     );
 
     await User.bulkCreate(hashedUsers);

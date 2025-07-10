@@ -1,4 +1,4 @@
-import { User, Follow } from "./index.js";
+import { User, Follow } from './index.js';
 
 const syncAll = async () => {
   await User.sync({ alter: true });
@@ -6,8 +6,7 @@ const syncAll = async () => {
 };
 
 syncAll()
-  .then(() => console.log("All models synced"))
+  .then(() => console.log('All models synced'))
   .catch(console.error);
-
 
 // to run: node db/syncModels.js
