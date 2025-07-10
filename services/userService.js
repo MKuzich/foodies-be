@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import gravatar from 'gravatar';
 import { nanoid } from 'nanoid';
 import User from '../db/User.js';
 import { createToken } from '../helpers/jwt.js';
