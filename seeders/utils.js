@@ -17,7 +17,7 @@ export const getSeeder = (fileName, model, callback) => {
 
       let processedData = parsedData;
       if (callback) {
-        processedData = await callback(parsedData)
+        processedData = await callback(parsedData);
       }
 
       await model.bulkCreate(processedData);
@@ -25,5 +25,5 @@ export const getSeeder = (fileName, model, callback) => {
     } catch (error) {
       console.error(`❌ Error seeding ${model.getTableName()}:`, error);
     }
-  }
+  };
 };

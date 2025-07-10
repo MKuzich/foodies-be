@@ -1,6 +1,6 @@
-import {DataTypes} from "sequelize";
-import sequelize from "./sequelize.js";
-import { emailRegexp } from "../constants/user.js";
+import { DataTypes } from 'sequelize';
+import sequelize from './sequelize.js';
+import { emailRegexp } from '../constants/user.js';
 
 const User = sequelize.define(
   'user',
@@ -55,7 +55,6 @@ User.prototype.toPublicJSON = function () {
     avatarURL: this.avatarURL,
   };
 };
-
 
 // User.sync({alter: true});
 

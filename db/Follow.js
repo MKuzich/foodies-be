@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 
-
 const Follow = sequelize.define(
   'follow',
   {
@@ -9,19 +8,19 @@ const Follow = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "users", 
-        key: "id",
+        model: 'users',
+        key: 'id',
       },
-      primaryKey: true, 
+      primaryKey: true,
     },
     followingId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "users",
-        key: "id",
+        model: 'users',
+        key: 'id',
       },
-      primaryKey: true, 
+      primaryKey: true,
     },
   },
   {
@@ -30,7 +29,7 @@ const Follow = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ["followerId", "followingId"], 
+        fields: ['followerId', 'followingId'],
       },
     ],
   }

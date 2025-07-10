@@ -1,5 +1,5 @@
-import { User, Follow } from "../db/index.js";
-import HttpError from "../helpers/httpError.js";
+import { User, Follow } from '../db/index.js';
+import HttpError from '../helpers/httpError.js';
 
 export const findUserWithOptions = (where, options = {}) => {
   return User.findOne({
@@ -12,8 +12,8 @@ export const getFollowers = async (userId) => {
     where: { id: userId },
     include: {
       model: User,
-      as: "followers",
-      attributes: ["id", "name", "email", "avatarURL"],
+      as: 'followers',
+      attributes: ['id', 'name', 'email', 'avatarURL'],
     },
   });
 
@@ -29,9 +29,9 @@ export const getFollowing = async (userId) => {
       include: [
         {
           model: User,
-          as: "Following", 
-          attributes: ["id", "name", "email", "avatarURL"],
-          through: { attributes: [] }, 
+          as: 'Following',
+          attributes: ['id', 'name', 'email', 'avatarURL'],
+          through: { attributes: [] },
         },
       ],
     }
@@ -42,10 +42,9 @@ export const getFollowing = async (userId) => {
   return userWithFollowing.Following || [];
 };
 
-
 export const followUser = async (followerId, followingId) => {
   if (followerId === followingId)
-    throw HttpError(400, "You can't follow yourself");
+    throw HttpError(400, 'You can not follow yourself');
 
   const userToFollow = await findUserWithOptions({ id: followingId });
   if (!userToFollow) throw HttpError(404, 'User not found');
@@ -53,7 +52,7 @@ export const followUser = async (followerId, followingId) => {
   const [follow, created] = await Follow.findOrCreate({
     where: { followerId, followingId },
   });
-  if (!created) throw HttpError(409, "Already following this user");
+  if (!created) throw HttpError(409, 'Already following this user');
   return { success: true };
 };
 
