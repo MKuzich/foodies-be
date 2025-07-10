@@ -17,7 +17,15 @@ export const registerUser = async (payload) => {
     password: hashedPassword,
   });
 
-  return user.toPublicJSON();
+  const token = createToken({ id: user.id });
+
+  user.token = token;
+  await user.save();
+
+  return {
+    token,
+    user: user.toPublicJSON(),
+  };
 };
 
 export const loginUser = async ({ email, password }) => {
