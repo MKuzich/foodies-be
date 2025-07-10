@@ -23,7 +23,7 @@ export const getSeeder = (fileName, model, callback) => {
       await model.bulkCreate(processedData);
       console.log(`✅ ${model.getTableName().toUpperCase()} seeded!`);
     } catch (error) {
-      console.error(`❌ Error seeding ${model.getTableName()}s:`, error);
+      console.error(`❌ Error seeding ${model.getTableName()}:`, error);
     }
   }
 };
