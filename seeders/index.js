@@ -4,6 +4,7 @@ import { seedCategories } from './seedCategories.js';
 import { seedAreas } from './seedAreas.js';
 import { seedIngredients } from './seedIngredients.js';
 import { seedTestimonials } from './seedTestimonials.js';
+import { seedRecipes } from './seedRecipes.js';
 
 const seed = async () => {
   await sequelize.sync({ force: true });
@@ -12,6 +13,7 @@ const seed = async () => {
   await seedAreas();
   await seedIngredients();
   await seedTestimonials();
+  await seedRecipes();
 };
 
 seed();
