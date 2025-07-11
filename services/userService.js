@@ -1,4 +1,4 @@
-import User from '../db/User.js';
+import {User, Recipe, Follow} from '../db/index.js';
 import { createToken } from '../helpers/jwt.js';
 import HttpError from '../helpers/httpError.js';
 import { comparePasswords, hashPassword } from '../helpers/hash.js';
@@ -71,14 +71,40 @@ export const updateAvatar = async (id, avatar) => {
   }
 };
 
-export const getUserInfo = async (query) => {
-  try {
-    const user = await findUser(query);
-    if (!user) {
-      return null;
-    }
-    return user.toPublicJSON();
-  } catch (error) {
-    throw HttpError(500, error.message);
+export const getUserInfo = async (authUserId, targetUserId) => {
+  const user = await User.findByPk(targetUserId);
+  if (!user) throw HttpError(404, 'User not found');
+
+  const baseInfo = user.toPublicJSON();
+
+  const createdCount = await Recipe.count({ where: { owner: targetUserId } });
+  const followersCount = await user.countFollowers();
+  const followingCount = await user.countFollowing();
+
+  const isSelf = authUserId === targetUserId;
+
+  const result = {
+    ...baseInfo,
+    createdCount,
+    followersCount,
+    followingCount,
+  };
+
+  if (isSelf) {
+    const favoriteCount = (await user.countFavorites?.()) || 0;
+    const followingCount = await user.countFollowing();
+    result.favoriteCount = favoriteCount;
+    result.followingCount = followingCount;
+  } else {
+    const follow = await Follow.findOne({
+      where: {
+        followerId: authUserId,
+        followingId: targetUserId,
+      },
+    });
+
+    result.isFollowed = !!follow; 
   }
+
+  return result;
 };

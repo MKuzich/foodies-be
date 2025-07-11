@@ -31,6 +31,6 @@ userRouter.delete(
   followControllers.unfollowUserController
 );
 
-userRouter.get('/:id', authenticate, userController.getUserInfo);
+userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
 export default userRouter;
