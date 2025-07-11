@@ -6,8 +6,8 @@ import { seedIngredients } from './seedIngredients.js';
 
 const seed = async () => {
   await sequelize.sync({ force: true });
-  await seedCategories();
   await seedUsers();
+  await seedCategories();
   await seedAreas();
   await seedIngredients();
 };

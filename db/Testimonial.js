@@ -12,6 +12,6 @@ const Testimonial = sequelize.define('testimonial', {
   },
 });
 
-Testimonial.sync();
+// Testimonial.sync();
 
 export default Testimonial;
