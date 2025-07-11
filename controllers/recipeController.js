@@ -1,26 +1,30 @@
-import * as recipeService from '../services/recipeService.js';
+import * as recipesService from '../services/recipeService.js';
 import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 
 export const getAllRecipes = async (req, res) => {
-  const { id } = req.user;
-  const { favorite } = req.query;
-  let result;
-  if (favorite) {
-    result = await recipeService.recipesByStatus({
-      owner: id,
-      favorite: favorite,
-    });
-  } else {
-    result = await recipeService.allRecipes({ owner: id });
+  const recipes = await recipesService.getAllRecipes();
+
+  if (!recipes) {
+    throw HttpError(404, 'Recipes not found');
   }
-  res.json(result);
+  const recipesResponse = recipes.map((recipeData) => {
+    const recipe = recipeData.toJSON();
+    recipe.ingredients = recipe.ingredients.map((ing) => ({
+      id: ing.id,
+      name: ing.name,
+      img: ing.img,
+      measure: ing['recipe-ingredient']?.measure || null,
+    }));
+    return recipe;
+  });
+  res.json(recipesResponse);
 };
 
 export const updateRecipeStatus = async (req, res) => {
   const { id } = req.params;
   const { id: owner } = req.user;
-  const result = await recipeService.updateRecipeStatus(
+  const result = await recipesService.updateRecipeStatus(
     { id, owner },
     req.body
   );

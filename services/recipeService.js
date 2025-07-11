@@ -1,7 +1,20 @@
-import Recipe from '../db/index.js';
+import { Recipe } from '../db/index.js';
+import { Ingredient } from '../db/index.js';
 
-export const allRecipes = async (query) => {
-  return Recipe.findAll({ where: query });
+export const getAllRecipes = async (query) => {
+  return Recipe.findAll({
+    where: query,
+    include: [
+      {
+        model: Ingredient,
+        as: 'ingredients',
+        attributes: ['name', 'img'],
+        through: {
+          attributes: ['measure'],
+        },
+      },
+    ],
+  });
 };
 
 export const getRecipeById = async (query) => {
