@@ -1,45 +1,59 @@
 import { User, Follow } from '../db/index.js';
 import HttpError from '../helpers/httpError.js';
 
+const buildPagination = (total, page, limit) => ({
+  total,
+  page,
+  limit,
+  pages: Math.ceil(total / limit),
+});
+
 export const findUserWithOptions = (where, options = {}) => {
   return User.findOne({
     where,
     ...options,
   });
 };
-export const getFollowers = async (userId) => {
-  const userWithFollowers = await findUserWithOptions({
-    where: { id: userId },
-    include: {
-      model: User,
-      as: 'followers',
-      attributes: ['id', 'name', 'email', 'avatarURL'],
-    },
+
+export const getFollowing = async (userId, page = 1, limit = 5) => {
+  const offset = (page - 1) * limit;
+
+  const user = await User.findByPk(userId);
+  if (!user) throw HttpError(404, 'User not found');
+
+  const total = await user.countFollowing();
+
+  const following = await user.getFollowing({
+    attributes: ['id', 'name', 'email', 'avatarURL'],
+    through: { attributes: [] },
+    limit,
+    offset,
   });
 
-  if (!userWithFollowers) throw HttpError(404, 'User not found');
-
-  return userWithFollowers.Followers || [];
+  return {
+    results: following,
+    pagination: buildPagination(total, page, limit),
+  };
 };
+export const getFollowers = async (userId, page = 1, limit = 5) => {
+  const offset = (page - 1) * limit;
 
-export const getFollowing = async (userId) => {
-  const userWithFollowing = await findUserWithOptions(
-    { id: userId },
-    {
-      include: [
-        {
-          model: User,
-          as: 'Following',
-          attributes: ['id', 'name', 'email', 'avatarURL'],
-          through: { attributes: [] },
-        },
-      ],
-    }
-  );
+  const user = await User.findByPk(userId);
+  if (!user) throw HttpError(404, 'User not found');
 
-  if (!userWithFollowing) throw HttpError(404, 'User not found');
+  const total = await user.countFollowers();
 
-  return userWithFollowing.Following || [];
+  const followers = await user.getFollowers({
+    attributes: ['id', 'name', 'email', 'avatarURL'],
+    through: { attributes: [] },
+    limit,
+    offset,
+  });
+
+  return {
+    results: followers,
+    pagination: buildPagination(total, page, limit),
+  };
 };
 
 export const followUser = async (followerId, followingId) => {
