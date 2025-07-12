@@ -60,19 +60,47 @@ export const followUser = async (followerId, followingId) => {
   if (followerId === followingId)
     throw HttpError(400, 'You can not follow yourself');
 
-  const userToFollow = await findUserWithOptions({ id: followingId });
+  const userToFollow = await User.findByPk(followingId);
   if (!userToFollow) throw HttpError(404, 'User not found');
 
   const [follow, created] = await Follow.findOrCreate({
     where: { followerId, followingId },
   });
+
   if (!created) throw HttpError(409, 'Already following this user');
-  return { success: true };
+
+  const followersCount = await userToFollow.countFollowers();
+  const followingCount = await User.findByPk(followerId).then((user) =>
+    user.countFollowing()
+  );
+
+  return {
+    ...userToFollow.toPublicJSON(),
+    followersCount,
+    followingCount, 
+    isFollowed: true, 
+  };
 };
 
 export const unfollowUser = async (followerId, followingId) => {
-  const unfollow = await Follow.destroy({ where: { followerId, followingId } });
-  if (!unfollow) throw HttpError(404, 'Not following this user');
+  const userToUnfollow = await User.findByPk(followingId);
+  if (!userToUnfollow) throw HttpError(404, 'User not found');
 
-  return { success: true };
+  const deleted = await Follow.destroy({
+    where: { followerId, followingId },
+  });
+
+  if (!deleted) throw HttpError(404, 'Not following this user');
+
+  const followersCount = await userToUnfollow.countFollowers();
+  const followingCount = await User.findByPk(followerId).then((user) =>
+    user.countFollowing()
+  );
+
+  return {
+    ...userToUnfollow.toPublicJSON(),
+    followersCount,
+    followingCount,
+    isFollowed: false,
+  };
 };

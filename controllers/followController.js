@@ -23,15 +23,15 @@ const followUserController = async (req, res) => {
   const followerId = req.user.id;
   const followingId = req.params.id;
 
-  await followService.followUser(followerId, followingId);
-  res.status(201).json({ message: 'Followed successfully' });
+  const user =await followService.followUser(followerId, followingId);
+  res.status(201).json(user);
 };
 const unfollowUserController = async (req, res) => {
   const followerId = req.user.id;
   const followingId = req.params.id;
 
-  await followService.unfollowUser(followerId, followingId);
-  res.json({ message: 'Unfollowed successfully' });
+  const user = await followService.unfollowUser(followerId, followingId);
+  res.json(user);
 };
 
 export default {
