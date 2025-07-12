@@ -72,16 +72,19 @@ export const updateAvatar = async (id, avatar) => {
 };
 
 export const getUserInfo = async (authUserId, targetUserId) => {
-  const user = await User.findByPk(targetUserId);
+  const userId = Number(authUserId);
+  const targetId = Number(targetUserId);
+
+  const user = await User.findByPk(targetId);
   if (!user) throw HttpError(404, 'User not found');
 
   const baseInfo = user.toPublicJSON();
 
-  const createdCount = await Recipe.count({ where: { owner: targetUserId } });
+  const createdCount = await Recipe.count({ where: { owner: String(targetId) } });
   const followersCount = await user.countFollowers();
   const followingCount = await user.countFollowing();
 
-  const isSelf = authUserId === targetUserId;
+  const isSelf = userId === targetId;
 
   const result = {
     ...baseInfo,
@@ -98,8 +101,8 @@ export const getUserInfo = async (authUserId, targetUserId) => {
   } else {
     const follow = await Follow.findOne({
       where: {
-        followerId: authUserId,
-        followingId: targetUserId,
+        followerId: userId,
+        followingId: targetId,
       },
     });
 
