@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import sequelize from '../db/sequelize.js';
 
 export async function extractedSeedFile(filename) {
   try {
@@ -31,6 +32,9 @@ export const getSeeder = (fileName, model, callback) => {
       }
 
       await model.bulkCreate(processedData);
+      await sequelize.query(`
+        SELECT setval(pg_get_serial_sequence('"${model.getTableName()}"', 'id'), (SELECT MAX(id) FROM "${model.getTableName()}"));
+      `);
       console.log(`✅ ${model.getTableName().toUpperCase()} seeded!`);
     } catch (error) {
       console.error(`❌ Error seeding ${model.getTableName()}:`, error);
