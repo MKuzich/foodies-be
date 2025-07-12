@@ -4,7 +4,7 @@ import { Category, User, Area } from '../db/index.js';
 import { Op } from 'sequelize';
 
 export const getAllRecipes = async (query) => {
-  const { category, area } = query;
+  const { category, area, ingredient } = query;
   return Recipe.findAll({
     include: [
       {
@@ -47,6 +47,15 @@ export const getAllRecipes = async (query) => {
         through: {
           attributes: ['measure'],
         },
+        ...(ingredient
+          ? {
+              where: {
+                name: {
+                  [Op.iLike]: ingredient,
+                },
+              },
+            }
+          : {}),
       },
     ],
   });
