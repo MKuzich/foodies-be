@@ -1,62 +1,62 @@
 [
   {
-    "id": "6462a6cd4c3d0ddd28897f8a",
+    "id": 1,
     "name": "Seafood"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f8b",
+    "id": 2,
     "name": "Lamb"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f8c",
+    "id": 3,
     "name": "Starter"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f8d",
+    "id": 4,
     "name": "Chicken"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f8e",
+    "id": 5,
     "name": "Beef"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f8f",
+    "id": 6,
     "name": "Dessert"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f90",
+    "id": 7,
     "name": "Vegan"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f91",
+    "id": 8,
     "name": "Pork"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f92",
+    "id": 9,
     "name": "Vegetarian"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f93",
+    "id": 10,
     "name": "Miscellaneous"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f94",
+    "id": 11,
     "name": "Pasta"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f95",
+    "id": 12,
     "name": "Breakfast"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f96",
+    "id": 13,
     "name": "Side"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f97",
+    "id": 14,
     "name": "Goat"
   },
   {
-    "id": "6462a6cd4c3d0ddd28897f98",
+    "id": 15,
     "name": "Soup"
   }
 ]
