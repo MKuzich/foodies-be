@@ -1,16 +1,10 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 import { emailRegexp } from '../constants/user.js';
-import { nanoid } from 'nanoid';
 
 const User = sequelize.define(
   'user',
   {
-    id: {
-      type: DataTypes.STRING,
-      defaultValue: () => nanoid(),
-      primaryKey: true,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

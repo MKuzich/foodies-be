@@ -3,11 +3,6 @@ import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 
 const Recipe = sequelize.define('recipe', {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-    allowNull: false,
-  },
   category: DataTypes.STRING,
   owner: DataTypes.STRING,
   area: DataTypes.STRING,
