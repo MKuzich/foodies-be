@@ -11,7 +11,10 @@ const Recipe = sequelize.define('recipe', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  area: DataTypes.STRING,
+  areaId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   title: DataTypes.STRING,
   instructions: DataTypes.TEXT('long'),
   description: DataTypes.TEXT,

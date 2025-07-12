@@ -19,8 +19,10 @@ export const getAllRecipes = async (req, res) => {
     return {
       ...recipe,
       category: recipe.category?.name,
+      area: recipe.area?.name,
       categoryId: undefined,
       ownerId: undefined,
+      areaId: undefined,
     };
   });
   res.json(recipesResponse);
