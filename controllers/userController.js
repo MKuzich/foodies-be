@@ -3,8 +3,8 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/httpError.js';
 
 const getUserInfoController = async (req, res) => {
-  const authUserId = req.user.id;
-  const targetUserId = req.params.id;
+  const authUserId = Number(req.user.id);
+  const targetUserId = Number(req.params.id);
 
   const user = await userService.getUserInfo(authUserId, targetUserId);
 
