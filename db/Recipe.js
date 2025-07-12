@@ -3,9 +3,18 @@ import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 
 const Recipe = sequelize.define('recipe', {
-  category: DataTypes.STRING,
-  owner: DataTypes.STRING,
-  area: DataTypes.STRING,
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  ownerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  areaId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   title: DataTypes.STRING,
   instructions: DataTypes.TEXT('long'),
   description: DataTypes.TEXT,
