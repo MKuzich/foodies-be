@@ -1,4 +1,5 @@
 import Testimonial from '../db/Testimonial.js';
+import User from '../db/User.js';
 
 export const allTestimonials = async () => {
   return Testimonial.findAll({
@@ -6,6 +7,6 @@ export const allTestimonials = async () => {
       model: User,
       as: 'user',
       attributes: ['id', 'name'],
-    }
+    },
   });
 };
