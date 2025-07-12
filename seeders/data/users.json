@@ -1,20 +1,20 @@
 [
   {
-    "id": "64c8d958249fae54bae90bb9",
+    "id": 1,
     "name": "GoIT",
     "avatar": null,
     "email": "goit@gmail.com",
     "password": "test@gmail.com"
   },
   {
-    "id": "64c8d958249fae54bae90bb8",
+    "id": 2,
     "name": "Foodies user",
     "avatar": null,
     "email": "user@gmail.com",
     "password": "test@gmail.com"
   },
   {
-    "id": "64c8d958249fae54bae90bb7",
+    "id": 3,
     "name": "Larry Pageim",
     "avatar": null,
     "email": "larry@gmail.com",

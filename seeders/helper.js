@@ -30,6 +30,39 @@ const processDataId = async (fileName) => {
   updateData(fileName, items);
 };
 
-processDataId('areas.json');
-processDataId('categories.json');
-processRecipes();
+const updateRecipeIngredientsIds = async () => {
+  const parsedData = await extractedSeedFile('recipes.json');
+  const [ingredientsMap] = await extractedSeedFile('ingredientsMap.json');
+  const recipes = parsedData.map((recipe, index) => {
+    const { id, ingredients, ...rest } = recipe;
+    return {
+      id: index + 1,
+      ...rest,
+      ingredients: ingredients.map((ingredient) => ({
+        ...ingredient,
+        id: ingredientsMap[ingredient.id],
+      })),
+    };
+  });
+  updateData('recipes.json', recipes);
+};
+
+const updateIngredientsIds = async () => {
+  const parsedData = await extractedSeedFile('ingredients.json');
+  const ingredientsMap = {};
+  const ingredients = parsedData.map(({ id, ...rest }, index) => {
+    ingredientsMap[id] = index + 1;
+    return {
+      id: index + 1,
+      ...rest,
+    };
+  });
+  updateData('ingredientsMap.json', [ingredientsMap]);
+  updateData('ingredients.json', ingredients);
+};
+
+// processDataId('areas.json');
+// processDataId('categories.json');
+// processRecipes();
+// updateIngredientsIds();
+updateRecipeIngredientsIds();
