@@ -20,6 +20,7 @@ export const getAllRecipes = async (req, res) => {
       ...recipe,
       category: recipe.category?.name,
       categoryId: undefined,
+      ownerId: undefined,
     };
   });
   res.json(recipesResponse);

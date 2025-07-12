@@ -1,6 +1,6 @@
 import { Recipe } from '../db/index.js';
 import { Ingredient } from '../db/index.js';
-import { Category } from '../db/index.js';
+import { Category, User } from '../db/index.js';
 import { Op } from 'sequelize';
 
 export const getAllRecipes = async (query) => {
@@ -20,6 +20,11 @@ export const getAllRecipes = async (query) => {
               },
             }
           : {}),
+      },
+      {
+        model: User,
+        as: 'owner',
+        attributes: ['id', 'name', 'avatarURL'],
       },
       {
         model: Ingredient,

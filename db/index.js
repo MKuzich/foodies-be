@@ -46,6 +46,16 @@ Category.hasMany(Recipe, {
   as: 'recipes',
 });
 
+Recipe.belongsTo(User, {
+  foreignKey: 'ownerId',
+  as: 'owner',
+});
+
+User.hasMany(Recipe, {
+  foreignKey: 'ownerId',
+  as: 'recipes',
+});
+
 // User.hasMany(Testimonial, { foreignKey: 'owner' });
 // Testimonial.belongsTo(User, { foreignKey: 'owner', as: 'user' });
 
