@@ -1,10 +1,26 @@
 import { Recipe } from '../db/index.js';
 import { Ingredient } from '../db/index.js';
+import { Category } from '../db/index.js';
+import { Op } from 'sequelize';
 
 export const getAllRecipes = async (query) => {
+  const { category } = query;
   return Recipe.findAll({
-    where: query,
     include: [
+      {
+        model: Category,
+        as: 'category',
+        attributes: ['name'],
+        ...(category
+          ? {
+              where: {
+                name: {
+                  [Op.iLike]: category,
+                },
+              },
+            }
+          : {}),
+      },
       {
         model: Ingredient,
         as: 'ingredients',

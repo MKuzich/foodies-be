@@ -3,7 +3,10 @@ import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js';
 
 const Recipe = sequelize.define('recipe', {
-  category: DataTypes.STRING,
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   owner: DataTypes.STRING,
   area: DataTypes.STRING,
   title: DataTypes.STRING,

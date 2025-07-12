@@ -3,7 +3,7 @@ import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 
 export const getAllRecipes = async (req, res) => {
-  const recipes = await recipesService.getAllRecipes();
+  const recipes = await recipesService.getAllRecipes(req.query);
 
   if (!recipes) {
     throw HttpError(404, 'Recipes not found');
@@ -16,7 +16,11 @@ export const getAllRecipes = async (req, res) => {
       img: ing.img,
       measure: ing['recipe-ingredient']?.measure || null,
     }));
-    return recipe;
+    return {
+      ...recipe,
+      category: recipe.category?.name,
+      categoryId: undefined,
+    };
   });
   res.json(recipesResponse);
 };
