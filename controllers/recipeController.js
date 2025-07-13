@@ -23,11 +23,11 @@ const mapRecipe = (recipeData) => {
 
 export const getAllRecipes = async (req, res) => {
   const { page = 1, limit = 12, ...query } = req.query;
-  const { recipes, total } = await recipesService.getAllRecipes(
+  const { recipes, total } = await recipesService.getAllRecipes({
     query,
     page,
-    limit
-  );
+    limit,
+  });
 
   if (!recipes) {
     throw HttpError(404, 'Recipes not found');
@@ -35,6 +35,25 @@ export const getAllRecipes = async (req, res) => {
   const data = recipes.map(mapRecipe);
   const pagination = getPagination(total, page, limit);
   res.json({ data, pagination });
+};
+
+export const getUserRecipes = async (req, res) => {
+  const { page = 1, limit = 12, ...query } = req.query;
+  const id = Number(req.params.id);
+  const { recipes, total } = await recipesService.getAllRecipes({
+    query,
+    page,
+    limit,
+    ownerId: id,
+    attributes: ['id', 'title', 'description', 'thumb'],
+  });
+
+  if (!recipes) {
+    throw HttpError(404, 'Recipes not found');
+  }
+  // const data = recipes.map(mapRecipe);
+  const pagination = getPagination(total, page, limit);
+  res.json({ data: recipes, pagination });
 };
 
 export const getRecipeById = async (req, res) => {
@@ -64,5 +83,6 @@ export const updateRecipeStatus = async (req, res) => {
 export default {
   getAllRecipes: ctrlWrapper(getAllRecipes),
   getRecipeById: ctrlWrapper(getRecipeById),
+  getUserRecipes: ctrlWrapper(getUserRecipes),
   updateRecipeStatus: ctrlWrapper(updateRecipeStatus),
 };

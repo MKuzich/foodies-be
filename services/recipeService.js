@@ -30,7 +30,13 @@ const ingredientsInclude = {
   },
 };
 
-export const getAllRecipes = async (query, page, limit) => {
+export const getAllRecipes = async ({
+  query,
+  page,
+  limit,
+  ownerId,
+  attributes,
+}) => {
   const { category, area, ingredient } = query;
   const offset = (page - 1) * limit;
   const categoryFilter = {
@@ -57,29 +63,45 @@ export const getAllRecipes = async (query, page, limit) => {
       ]
     : [];
 
+  const ownerFilter = ownerId
+    ? [
+        {
+          model: User,
+          as: 'owner',
+          where: { id: ownerId },
+          required: true,
+          attributes: [],
+        },
+      ]
+    : [];
+
+  const include = ownerId
+    ? ownerFilter
+    : [
+        categoryFilter,
+        areaFilter,
+        ...ingredientFilter,
+        ownerInclude,
+        ingredientsInclude,
+      ];
+
   const total = await Recipe.count({
     include: [categoryFilter, areaFilter, ...ingredientFilter],
   });
 
   const recipes = await Recipe.findAll({
-    include: [
-      categoryFilter,
-      areaFilter,
-      ...ingredientFilter,
-      ownerInclude,
-      ingredientsInclude,
-    ],
+    include,
     order: [['id', 'ASC']],
     limit,
     offset,
+    attributes,
   });
 
   return { recipes, total };
 };
 
 export const getRecipeById = async (id) => {
-  return Recipe.findOne({
-    where: { id },
+  return Recipe.findByPk(id, {
     include: [categoryInclude, areaInclude, ownerInclude, ingredientsInclude],
   });
 };

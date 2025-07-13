@@ -6,12 +6,21 @@ import followControllers from '../controllers/followController.js';
 import authenticate from '../middlewares/authenticate.js';
 import validateId from '../middlewares/validateId.js';
 
+import recipesControllers from '../controllers/recipeController.js';
+
 const userRouter = express.Router();
 
 userRouter.get(
   '/following',
   authenticate,
   followControllers.getFollowingController
+);
+
+userRouter.get(
+  '/:id/recipes',
+  authenticate,
+  validateId,
+  recipesControllers.getUserRecipes
 );
 
 userRouter.get(
@@ -35,10 +44,6 @@ userRouter.delete(
   followControllers.unfollowUserController
 );
 
-userRouter.get(
-  '/:id',
-  authenticate,
-  userController.getUserInfoController
-);
+userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
 export default userRouter;
