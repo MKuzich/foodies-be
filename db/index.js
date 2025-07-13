@@ -44,6 +44,18 @@ Ingredient.belongsToMany(Recipe, {
   otherKey: 'recipeId',
 });
 
+Recipe.hasMany(RecipeIngredient, {
+  foreignKey: 'recipeId',
+  as: 'recipeIngredients',
+  onDelete: 'CASCADE',
+  hooks: true,
+});
+
+RecipeIngredient.belongsTo(Recipe, {
+  foreignKey: 'recipeId',
+  as: 'recipe',
+});
+
 Recipe.belongsTo(Category, {
   foreignKey: 'categoryId',
   as: 'category',

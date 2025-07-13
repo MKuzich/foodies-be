@@ -15,3 +15,18 @@ export const fileUpload = async (filePath, folder) => {
     throw HttpError(500, error.message);
   }
 };
+
+export const deleteImageFromCloudinary = async (imageUrl) => {
+  try {
+    const publicId = imageUrl
+      .split('/')
+      .slice(-2)
+      .join('/')
+      .replace(/\.[^/.]+$/, '');
+
+    await cloudinary.uploader.destroy(publicId);
+    console.log('Image deleted from Cloudinary:', publicId);
+  } catch (error) {
+    console.warn('Cloudinary delete failed:', error.message);
+  }
+};

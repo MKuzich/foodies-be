@@ -12,7 +12,6 @@ import { RECIPE_THUMB_FIELD } from '../constants/files.js';
 
 const recipeRouter = express.Router();
 
-
 /**
  * @swagger
  * /recipes:
@@ -50,6 +49,8 @@ recipeRouter.post(
   validateBody(createRecipeSchema),
   recipesControllers.createRecipe
 );
+
+recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
 
 /**
  * @swagger
