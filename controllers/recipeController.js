@@ -156,6 +156,17 @@ export const removeRecipeFromFavorites = async (req, res) => {
   res.status(204).send();
 };
 
+export const getFavoriteRecipes = async (req, res, next) => {
+  const user = req.user;
+
+  const favoriteRecipes = await user.getFavoriteRecipes({
+    attributes: ['id', 'title', 'description', 'thumb'],
+    joinTableAttributes: [],
+  });
+
+  res.json(favoriteRecipes);
+};
+
 export default {
   getAllRecipes: ctrlWrapper(getAllRecipes),
   getRecipeById: ctrlWrapper(getRecipeById),
@@ -164,4 +175,5 @@ export default {
   deleteRecipe: ctrlWrapper(deleteRecipe),
   addRecipeToFavorites: ctrlWrapper(addRecipeToFavorites),
   removeRecipeFromFavorites: ctrlWrapper(removeRecipeFromFavorites),
+  getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
 };

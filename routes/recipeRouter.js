@@ -47,6 +47,12 @@ recipeRouter.post(
   recipesControllers.createRecipe
 );
 
+recipeRouter.get(
+  '/favorites',
+  authenticate,
+  recipesControllers.getFavoriteRecipes
+);
+
 recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
 
 /**
