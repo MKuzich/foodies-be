@@ -138,6 +138,24 @@ export const addRecipeToFavorites = async (req, res) => {
   res.status(201).json({ message: 'Recipe added to favorites' });
 };
 
+export const removeRecipeFromFavorites = async (req, res) => {
+  const user = req.user;
+  const recipeId = Number(req.params.id);
+  const recipe = await recipesService.getRecipeById(recipeId);
+
+  if (!recipe) {
+    return res.status(404).json({ message: 'Recipe not found' });
+  }
+
+  const isAlreadyFavorite = await user.hasFavoriteRecipe(recipe);
+  if (!isAlreadyFavorite) {
+    return res.status(404).json({ message: 'Recipe is not in favorites' });
+  }
+
+  await user.removeFavoriteRecipe(recipe);
+  res.status(204).send();
+};
+
 export default {
   getAllRecipes: ctrlWrapper(getAllRecipes),
   getRecipeById: ctrlWrapper(getRecipeById),
@@ -145,4 +163,5 @@ export default {
   createRecipe: ctrlWrapper(createRecipe),
   deleteRecipe: ctrlWrapper(deleteRecipe),
   addRecipeToFavorites: ctrlWrapper(addRecipeToFavorites),
+  removeRecipeFromFavorites: ctrlWrapper(removeRecipeFromFavorites),
 };

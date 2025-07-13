@@ -80,6 +80,12 @@ recipeRouter.post(
   recipesControllers.addRecipeToFavorites
 );
 
+recipeRouter.delete(
+  '/:id/favorite',
+  authenticate,
+  recipesControllers.removeRecipeFromFavorites
+);
+
 /**
  * @swagger
  * /recipes/{id}:
