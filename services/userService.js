@@ -1,4 +1,4 @@
-import {User, Recipe, Follow} from '../db/index.js';
+import { User, Recipe, Follow } from '../db/index.js';
 import { createToken } from '../helpers/jwt.js';
 import HttpError from '../helpers/httpError.js';
 import { comparePasswords, hashPassword } from '../helpers/hash.js';
@@ -80,7 +80,9 @@ export const getUserInfo = async (authUserId, targetUserId) => {
 
   const baseInfo = user.toPublicJSON();
 
-  const createdCount = await Recipe.count({ where: { owner: String(targetId) } });
+  const createdCount = await Recipe.count({
+    where: { ownerId: String(targetId) },
+  });
   const followersCount = await user.countFollowers();
   const followingCount = await user.countFollowing();
 
@@ -106,7 +108,7 @@ export const getUserInfo = async (authUserId, targetUserId) => {
       },
     });
 
-    result.isFollowed = !!follow; 
+    result.isFollowed = !!follow;
   }
 
   return result;
