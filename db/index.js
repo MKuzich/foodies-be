@@ -31,6 +31,13 @@ Recipe.belongsToMany(Ingredient, {
   as: 'ingredients',
 });
 
+Recipe.belongsToMany(Ingredient, {
+  through: RecipeIngredient,
+  foreignKey: 'recipeId',
+  otherKey: 'ingredientId',
+  as: 'ingredientFilter',
+});
+
 Ingredient.belongsToMany(Recipe, {
   through: RecipeIngredient,
   foreignKey: 'ingredientId',
