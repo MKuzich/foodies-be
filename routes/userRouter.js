@@ -10,7 +10,6 @@ import recipesControllers from '../controllers/recipeController.js';
 
 const userRouter = express.Router();
 
-
 /**
  * @swagger
  * /users/following:
@@ -36,7 +35,11 @@ const userRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-userRouter.get('/following', authenticate, followControllers.getFollowingController);
+userRouter.get(
+  '/following',
+  authenticate,
+  followControllers.getFollowingController
+);
 
 /**
  * @swagger
@@ -66,7 +69,12 @@ userRouter.get('/following', authenticate, followControllers.getFollowingControl
  *       404:
  *         description: User not found
  */
-userRouter.get('/:id/followers', authenticate, validateId, followControllers.getFollowersController);
+userRouter.get(
+  '/:id/followers',
+  authenticate,
+  validateId,
+  followControllers.getFollowersController
+);
 
 /**
  * @swagger
@@ -92,7 +100,12 @@ userRouter.get('/:id/followers', authenticate, validateId, followControllers.get
  *       409:
  *         description: Already following this user
  */
-userRouter.post('/:id/follow', authenticate, validateId, followControllers.followUserController);
+userRouter.post(
+  '/:id/follow',
+  authenticate,
+  validateId,
+  followControllers.followUserController
+);
 
 /**
  * @swagger
@@ -114,7 +127,12 @@ userRouter.post('/:id/follow', authenticate, validateId, followControllers.follo
  *       404:
  *         description: Not following this user or user not found
  */
-userRouter.delete('/:id/unfollow', authenticate, validateId, followControllers.unfollowUserController);
+userRouter.delete(
+  '/:id/unfollow',
+  authenticate,
+  validateId,
+  followControllers.unfollowUserController
+);
 
 /**
  * @swagger
@@ -138,40 +156,31 @@ userRouter.delete('/:id/unfollow', authenticate, validateId, followControllers.u
  */
 userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
-userRouter.get(
-  '/following',
-  authenticate,
-  followControllers.getFollowingController
-);
-
+/**
+ * @swagger
+ * /users/{id}/recipes:
+ *   get:
+ *     summary: Get recipes created by the specified user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of recipes
+ *       404:
+ *         description: User not found
+ */
 userRouter.get(
   '/:id/recipes',
   authenticate,
   validateId,
   recipesControllers.getUserRecipes
 );
-
-userRouter.get(
-  '/:id/followers',
-  authenticate,
-  validateId,
-  followControllers.getFollowersController
-);
-
-userRouter.post(
-  '/:id/follow',
-  authenticate,
-  validateId,
-  followControllers.followUserController
-);
-
-userRouter.delete(
-  '/:id/unfollow',
-  validateId,
-  authenticate,
-  followControllers.unfollowUserController
-);
-
-userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
 export default userRouter;

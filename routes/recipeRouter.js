@@ -75,6 +75,24 @@ recipeRouter.patch(
   recipesControllers.updateRecipeStatus
 );
 
+/**
+ * @swagger
+ * /recipes/{id}:
+ *   get:
+ *     summary: Get recipe details by ID
+ *     tags: [Recipes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Recipe details
+ *       404:
+ *         description: Recipe not found
+ */
 recipeRouter.get('/:id', recipesControllers.getRecipeById);
 
 
