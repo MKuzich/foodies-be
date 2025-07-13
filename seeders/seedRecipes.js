@@ -7,7 +7,8 @@ const seedRecipes = async () => {
   let recipeIngredientsData = [];
   data.forEach((recipe) => {
     const { ingredients, ...recipeData } = recipe;
-    recipesData.push(recipeData);
+    const randomUserId = Math.floor(Math.random() * 7) + 1;
+    recipesData.push({ ...recipeData, ownerId: randomUserId });
     ingredients.forEach(({ id, measure }) => {
       recipeIngredientsData.push({
         recipeId: recipe.id,

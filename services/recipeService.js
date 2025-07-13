@@ -3,36 +3,49 @@ import { Ingredient } from '../db/index.js';
 import { Category, User, Area } from '../db/index.js';
 import { Op } from 'sequelize';
 
-export const getAllRecipes = async (query, page, limit) => {
+const categoryInclude = {
+  model: Category,
+  as: 'category',
+  attributes: ['name'],
+};
+
+const areaInclude = {
+  model: Area,
+  as: 'area',
+  attributes: ['name'],
+};
+
+const ownerInclude = {
+  model: User,
+  as: 'owner',
+  attributes: ['id', 'name', 'avatarURL'],
+};
+
+const ingredientsInclude = {
+  model: Ingredient,
+  as: 'ingredients',
+  attributes: ['name', 'img'],
+  through: {
+    attributes: ['measure'],
+  },
+};
+
+export const getAllRecipes = async ({
+  query,
+  page,
+  limit,
+  ownerId,
+  attributes,
+}) => {
   const { category, area, ingredient } = query;
   const offset = (page - 1) * limit;
   const categoryFilter = {
-    model: Category,
-    as: 'category',
-    attributes: ['name'],
-    ...(category
-      ? {
-          where: {
-            name: {
-              [Op.iLike]: category,
-            },
-          },
-        }
-      : {}),
+    ...categoryInclude,
+    ...(category ? { where: { name: { [Op.iLike]: category } } } : {}),
   };
   const areaFilter = {
-    model: Area,
-    as: 'area',
-    attributes: ['name'],
-    ...(area
-      ? {
-          where: {
-            name: {
-              [Op.iLike]: area,
-            },
-          },
-        }
-      : {}),
+    ...areaInclude,
+    ...(area ? { where: { name: { [Op.iLike]: area } } } : {}),
   };
 
   const ingredientFilter = ingredient
@@ -40,11 +53,7 @@ export const getAllRecipes = async (query, page, limit) => {
         {
           model: Ingredient,
           as: 'ingredientFilter',
-          where: {
-            name: {
-              [Op.iLike]: ingredient,
-            },
-          },
+          where: { name: { [Op.iLike]: ingredient } },
           required: true,
           attributes: [],
           through: {
@@ -54,41 +63,49 @@ export const getAllRecipes = async (query, page, limit) => {
       ]
     : [];
 
-  const allIngredientsInclude = {
-    model: Ingredient,
-    as: 'ingredients',
-    attributes: ['name', 'img'],
-    through: {
-      attributes: ['measure'],
-    },
-  };
+  const ownerFilter = ownerId
+    ? [
+        {
+          model: User,
+          as: 'owner',
+          where: { id: ownerId },
+          required: true,
+          attributes: [],
+        },
+      ]
+    : [];
+
+  const include = ownerId
+    ? ownerFilter
+    : [
+        categoryFilter,
+        areaFilter,
+        ...ingredientFilter,
+        ownerInclude,
+        ingredientsInclude,
+      ];
 
   const total = await Recipe.count({
-    include: [categoryFilter, areaFilter, ...ingredientFilter],
+    include: ownerId
+      ? ownerFilter
+      : [categoryFilter, areaFilter, ...ingredientFilter],
   });
 
   const recipes = await Recipe.findAll({
-    include: [
-      categoryFilter,
-      areaFilter,
-      ...ingredientFilter,
-      {
-        model: User,
-        as: 'owner',
-        attributes: ['id', 'name', 'avatarURL'],
-      },
-      allIngredientsInclude,
-    ],
+    include,
     order: [['id', 'ASC']],
     limit,
     offset,
+    attributes,
   });
 
   return { recipes, total };
 };
 
-export const getRecipeById = async (query) => {
-  return Recipe.findOne({ where: query });
+export const getRecipeById = async (id) => {
+  return Recipe.findByPk(id, {
+    include: [categoryInclude, areaInclude, ownerInclude, ingredientsInclude],
+  });
 };
 
 export const updateRecipeStatus = async (query, data) => {

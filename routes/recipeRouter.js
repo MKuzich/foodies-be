@@ -12,4 +12,6 @@ recipeRouter.patch(
   recipesControllers.updateRecipeStatus
 );
 
+recipeRouter.get('/:id', recipesControllers.getRecipeById);
+
 export default recipeRouter;
