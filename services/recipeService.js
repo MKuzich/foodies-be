@@ -86,7 +86,9 @@ export const getAllRecipes = async ({
       ];
 
   const total = await Recipe.count({
-    include: [categoryFilter, areaFilter, ...ingredientFilter],
+    include: ownerId
+      ? ownerFilter
+      : [categoryFilter, areaFilter, ...ingredientFilter],
   });
 
   const recipes = await Recipe.findAll({
