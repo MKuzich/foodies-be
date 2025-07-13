@@ -3,36 +3,43 @@ import { Ingredient } from '../db/index.js';
 import { Category, User, Area } from '../db/index.js';
 import { Op } from 'sequelize';
 
+const categoryInclude = {
+  model: Category,
+  as: 'category',
+  attributes: ['name'],
+};
+
+const areaInclude = {
+  model: Area,
+  as: 'area',
+  attributes: ['name'],
+};
+
+const ownerInclude = {
+  model: User,
+  as: 'owner',
+  attributes: ['id', 'name', 'avatarURL'],
+};
+
+const ingredientsInclude = {
+  model: Ingredient,
+  as: 'ingredients',
+  attributes: ['name', 'img'],
+  through: {
+    attributes: ['measure'],
+  },
+};
+
 export const getAllRecipes = async (query, page, limit) => {
   const { category, area, ingredient } = query;
   const offset = (page - 1) * limit;
   const categoryFilter = {
-    model: Category,
-    as: 'category',
-    attributes: ['name'],
-    ...(category
-      ? {
-          where: {
-            name: {
-              [Op.iLike]: category,
-            },
-          },
-        }
-      : {}),
+    ...categoryInclude,
+    ...(category ? { where: { name: { [Op.iLike]: category } } } : {}),
   };
   const areaFilter = {
-    model: Area,
-    as: 'area',
-    attributes: ['name'],
-    ...(area
-      ? {
-          where: {
-            name: {
-              [Op.iLike]: area,
-            },
-          },
-        }
-      : {}),
+    ...areaInclude,
+    ...(area ? { where: { name: { [Op.iLike]: area } } } : {}),
   };
 
   const ingredientFilter = ingredient
@@ -40,11 +47,7 @@ export const getAllRecipes = async (query, page, limit) => {
         {
           model: Ingredient,
           as: 'ingredientFilter',
-          where: {
-            name: {
-              [Op.iLike]: ingredient,
-            },
-          },
+          where: { name: { [Op.iLike]: ingredient } },
           required: true,
           attributes: [],
           through: {
@@ -53,15 +56,6 @@ export const getAllRecipes = async (query, page, limit) => {
         },
       ]
     : [];
-
-  const allIngredientsInclude = {
-    model: Ingredient,
-    as: 'ingredients',
-    attributes: ['name', 'img'],
-    through: {
-      attributes: ['measure'],
-    },
-  };
 
   const total = await Recipe.count({
     include: [categoryFilter, areaFilter, ...ingredientFilter],
@@ -72,12 +66,8 @@ export const getAllRecipes = async (query, page, limit) => {
       categoryFilter,
       areaFilter,
       ...ingredientFilter,
-      {
-        model: User,
-        as: 'owner',
-        attributes: ['id', 'name', 'avatarURL'],
-      },
-      allIngredientsInclude,
+      ownerInclude,
+      ingredientsInclude,
     ],
     order: [['id', 'ASC']],
     limit,
@@ -87,8 +77,11 @@ export const getAllRecipes = async (query, page, limit) => {
   return { recipes, total };
 };
 
-export const getRecipeById = async (query) => {
-  return Recipe.findOne({ where: query });
+export const getRecipeById = async (id) => {
+  return Recipe.findOne({
+    where: { id },
+    include: [categoryInclude, areaInclude, ownerInclude, ingredientsInclude],
+  });
 };
 
 export const updateRecipeStatus = async (query, data) => {
