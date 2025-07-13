@@ -2,6 +2,7 @@ import { Recipe } from '../db/index.js';
 import { Ingredient } from '../db/index.js';
 import { Category, User, Area, RecipeIngredient } from '../db/index.js';
 import { Op } from 'sequelize';
+import sequelize from '../db/sequelize.js';
 
 const categoryInclude = {
   model: Category,
@@ -113,4 +114,60 @@ export const createRecipe = async (data, getIngredientsData) => {
   const ingredientsData = getIngredientsData(recipe.id);
   await RecipeIngredient.bulkCreate(ingredientsData);
   return getRecipeById(recipe.id);
+};
+
+const getTopRecipeIds = async (limit = 4) => {
+  const results = await sequelize.query(
+    `
+    SELECT "recipeId", COUNT(*) as "favoritesCount"
+    FROM user_favorites
+    GROUP BY "recipeId"
+    ORDER BY "favoritesCount" DESC
+    LIMIT :limit
+  `,
+    {
+      replacements: { limit },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return results.map((result) => result.recipeId);
+};
+
+export const getPopularRecipes = async (limit = 4) => {
+  const topRecipeIds = await getTopRecipeIds(limit);
+
+  if (topRecipeIds.length < limit) {
+    const neededCount = limit - topRecipeIds.length;
+
+    const randomRecipes = await Recipe.findAll({
+      where: {
+        id: {
+          [Op.notIn]: topRecipeIds,
+        },
+      },
+      attributes: ['id'],
+      order: sequelize.random(),
+      limit: neededCount,
+    });
+
+    const randomIds = randomRecipes.map((recipe) => recipe.id);
+    topRecipeIds.push(...randomIds);
+  }
+
+  return Recipe.findAll({
+    where: {
+      id: topRecipeIds,
+    },
+    attributes: ['id', 'title', 'description', 'thumb'],
+    include: [ownerInclude],
+    order: [
+      [
+        sequelize.literal(
+          `ARRAY_POSITION(ARRAY[${topRecipeIds.reverse().join(',')}], "recipe"."id")`
+        ),
+        'DESC',
+      ],
+    ],
+  });
 };
