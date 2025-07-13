@@ -71,45 +71,29 @@ export const updateAvatar = async (id, avatar) => {
   }
 };
 
-export const getUserInfo = async (authUserId, targetUserId) => {
-  const userId = Number(authUserId);
-  const targetId = Number(targetUserId);
-
-  const user = await User.findByPk(targetId);
+export const findUserById = async (id) => {
+  const user = await User.findByPk(id);
   if (!user) throw HttpError(404, 'User not found');
+  return user;
+};
 
-  const baseInfo = user.toPublicJSON();
+export const countCreatedRecipes = async (userId) => {
+  return Recipe.count({ where: { owner: String(userId) } });
+};
 
-  const createdCount = await Recipe.count({
-    where: { ownerId: String(targetId) },
+export const countFavorites = async (user) => {
+  return (await user.countFavorites?.()) || 0;
+};
+
+export const countFollowers = (user) => user.countFollowers();
+export const countFollowing = (user) => user.countFollowing();
+
+export const checkIfFollowed = async (followerId, followingId) => {
+  const follow = await Follow.findOne({
+    where: {
+      followerId,
+      followingId,
+    },
   });
-  const followersCount = await user.countFollowers();
-  const followingCount = await user.countFollowing();
-
-  const isSelf = userId === targetId;
-
-  const result = {
-    ...baseInfo,
-    createdCount,
-    followersCount,
-    followingCount,
-  };
-
-  if (isSelf) {
-    const favoriteCount = (await user.countFavorites?.()) || 0;
-    const followingCount = await user.countFollowing();
-    result.favoriteCount = favoriteCount;
-    result.followingCount = followingCount;
-  } else {
-    const follow = await Follow.findOne({
-      where: {
-        followerId: userId,
-        followingId: targetId,
-      },
-    });
-
-    result.isFollowed = !!follow;
-  }
-
-  return result;
+  return !!follow;
 };
