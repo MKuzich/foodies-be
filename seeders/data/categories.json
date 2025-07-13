@@ -1,62 +1,77 @@
 [
   {
     "id": 1,
-    "name": "Seafood"
+    "name": "Seafood",
+    "description": "Dishes featuring fish, shellfish, and other seafood, prepared in various styles like grilling, baking, or frying."
   },
   {
     "id": 2,
-    "name": "Lamb"
+    "name": "Lamb",
+    "description": "Recipes featuring lamb, including roasts, chops, and stews, known for its distinct flavor."
   },
   {
     "id": 3,
-    "name": "Starter"
+    "name": "Starter",
+    "description": "Small dishes served before the main course, such as appetizers, soups, or small bites."
   },
   {
     "id": 4,
-    "name": "Chicken"
+    "name": "Chicken",
+    "description": "Dishes centered around chicken, prepared through grilling, roasting, frying, or other cooking methods."
   },
   {
     "id": 5,
-    "name": "Beef"
+    "name": "Beef",
+    "description": "Recipes featuring beef as the primary ingredient, including steaks, roasts, and ground beef dishes."
   },
   {
     "id": 6,
-    "name": "Dessert"
+    "name": "Dessert",
+    "description": "Sweet dishes typically served at the end of a meal, including cakes, pastries, ice creams, and other confections."
   },
   {
     "id": 7,
-    "name": "Vegan"
+    "name": "Vegan",
+    "description": "Plant-based recipes that exclude all animal products, including meat, dairy, and eggs."
   },
   {
     "id": 8,
-    "name": "Pork"
+    "name": "Pork",
+    "description": "Recipes that use pork as the main ingredient, including chops, ribs, and pulled pork dishes."
   },
   {
     "id": 9,
-    "name": "Vegetarian"
+    "name": "Vegetarian",
+    "description": "Recipes that exclude meat and fish, focusing on vegetables, grains, legumes, and other plant-based ingredients."
   },
   {
     "id": 10,
-    "name": "Miscellaneous"
+    "name": "Miscellaneous",
+    "description": "A variety of recipes that don't fit into specific categories, including unique or experimental dishes."
   },
   {
     "id": 11,
-    "name": "Pasta"
+    "name": "Pasta",
+    "description": "Dishes centered around pasta, paired with sauces, meats, vegetables, or cheeses."
   },
   {
     "id": 12,
-    "name": "Breakfast"
+    "name": "Breakfast",
+    "description": "Recipes for morning meals, including eggs, pancakes, oatmeal, and other breakfast staples."
   },
   {
     "id": 13,
-    "name": "Side"
+    "name": "Side",
+    "description": "Complementary dishes served alongside main courses, such as salads, vegetables, or starches."
   },
   {
     "id": 14,
-    "name": "Goat"
+    "name": "Goat",
+    "description": "Recipes featuring goat meat, often used in stews, curries, or grilled dishes."
   },
   {
     "id": 15,
-    "name": "Soup"
+    "name": "Soup",
+    "description": "Liquid-based dishes, often served warm or cold, featuring broths, vegetables, or meats."
   }
 ]
