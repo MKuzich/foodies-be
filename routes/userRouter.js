@@ -6,6 +6,8 @@ import followControllers from '../controllers/followController.js';
 import authenticate from '../middlewares/authenticate.js';
 import validateId from '../middlewares/validateId.js';
 
+import recipesControllers from '../controllers/recipeController.js';
+
 const userRouter = express.Router();
 
 
@@ -136,5 +138,40 @@ userRouter.delete('/:id/unfollow', authenticate, validateId, followControllers.u
  */
 userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
+userRouter.get(
+  '/following',
+  authenticate,
+  followControllers.getFollowingController
+);
+
+userRouter.get(
+  '/:id/recipes',
+  authenticate,
+  validateId,
+  recipesControllers.getUserRecipes
+);
+
+userRouter.get(
+  '/:id/followers',
+  authenticate,
+  validateId,
+  followControllers.getFollowersController
+);
+
+userRouter.post(
+  '/:id/follow',
+  authenticate,
+  validateId,
+  followControllers.followUserController
+);
+
+userRouter.delete(
+  '/:id/unfollow',
+  validateId,
+  authenticate,
+  followControllers.unfollowUserController
+);
+
+userRouter.get('/:id', authenticate, userController.getUserInfoController);
 
 export default userRouter;
