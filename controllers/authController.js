@@ -2,7 +2,7 @@ import * as userService from '../services/userService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/httpError.js';
 import { AVATAR_FOLDER } from '../constants/files.js';
-import { fileUpload } from '../helpers/fileUpload.js';
+import { fileUpload } from '../helpers/fileStorage.js';
 
 const register = async (req, res) => {
   const user = await userService.registerUser(req.body);

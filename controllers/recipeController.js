@@ -2,7 +2,10 @@ import * as recipesService from '../services/recipeService.js';
 import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { getPagination } from '../helpers/pagination.js';
-import { fileUpload } from '../helpers/fileUpload.js';
+import {
+  fileUpload,
+  deleteImageFromCloudinary,
+} from '../helpers/fileStorage.js';
 import { RECIPE_THUMB_FOLDER } from '../constants/files.js';
 
 const mapRecipe = (recipeData) => {
@@ -101,6 +104,23 @@ export const createRecipe = async (req, res) => {
   res.status(201).json(mapRecipe(recipe));
 };
 
+export const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
+  const { id: ownerId } = req.user;
+  const recipe = await recipesService.getRecipeById(id);
+  if (!recipe) {
+    throw HttpError(404, 'Recipe not found');
+  }
+  if (recipe.ownerId !== ownerId) {
+    throw HttpError(403, 'You do not have permission to delete this recipe');
+  }
+  if (recipe.thumb?.includes('res.cloudinary.com')) {
+    await deleteImageFromCloudinary(recipe.thumb);
+  }
+  await recipe.destroy();
+  res.status(204).json(recipe);
+};
+
 export const updateRecipeStatus = async (req, res) => {
   const { id } = req.params;
   const { id: owner } = req.user;
@@ -120,5 +140,6 @@ export default {
   getRecipeById: ctrlWrapper(getRecipeById),
   getUserRecipes: ctrlWrapper(getUserRecipes),
   createRecipe: ctrlWrapper(createRecipe),
+  deleteRecipe: ctrlWrapper(deleteRecipe),
   updateRecipeStatus: ctrlWrapper(updateRecipeStatus),
 };
