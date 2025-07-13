@@ -1,13 +1,12 @@
-import Testimonial from '../db/Testimonial.js';
-// import User from '../db/User.js';
+import { Testimonial, User } from '../db/index.js';
 
-export const allTestimonials = async () => {
-  return Testimonial.findAll();
-  //   {
-  //   include: {
-  //     model: User,
-  //     as: 'user',
-  //     attributes: ['id', 'name'],
-  //   },
-  // }
+export const getTestimonials = async () => {
+  return Testimonial.findAll({
+    attributes: ['id', 'testimonial'],
+    include: {
+      model: User,
+      as: 'user',
+      attributes: ['name'],
+    },
+  });
 };
