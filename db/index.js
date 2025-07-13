@@ -86,6 +86,20 @@ Area.hasMany(Recipe, {
   as: 'recipes',
 });
 
+User.belongsToMany(Recipe, {
+  through: 'user_favorites',
+  as: 'favoriteRecipes',
+  foreignKey: 'userId',
+  otherKey: 'recipeId',
+});
+
+Recipe.belongsToMany(User, {
+  through: 'user_favorites',
+  as: 'usersWhoFavorited',
+  foreignKey: 'recipeId',
+  otherKey: 'userId',
+});
+
 // User.hasMany(Testimonial, { foreignKey: 'owner' });
 // Testimonial.belongsTo(User, { foreignKey: 'owner', as: 'user' });
 
