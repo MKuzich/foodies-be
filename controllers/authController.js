@@ -1,8 +1,8 @@
 import * as userService from '../services/userService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
-import { unlink } from 'node:fs/promises';
 import HttpError from '../helpers/httpError.js';
-import cloudinary from '../helpers/cloudinary.js';
+import { AVATAR_FOLDER } from '../constants/files.js';
+import { fileUpload } from '../helpers/fileUpload.js';
 
 const register = async (req, res) => {
   const user = await userService.registerUser(req.body);
@@ -35,18 +35,8 @@ export const updateAvatar = async (req, res) => {
   if (!req.file) {
     throw HttpError(404, 'No file uploaded');
   }
-  let avatarURL = null;
-  try {
-    const { url } = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'avatars',
-      use_filename: true,
-    });
-    avatarURL = url;
-    await unlink(req.file.path);
-  } catch (error) {
-    await unlink(req.file.path);
-    throw HttpError(500, error.message);
-  }
+
+  const avatarURL = (await fileUpload(req.file.path, AVATAR_FOLDER)) || null;
 
   await userService.updateAvatar(id, avatarURL);
 

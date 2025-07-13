@@ -5,9 +5,9 @@ import userSchemas from '../schemas/userSchemas.js';
 import validateBody from '../decorators/validateBody.js';
 import authenticate from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/upload.js';
+import { AVATAR_FIELD } from '../constants/files.js';
 
 const authRouter = express.Router();
-
 
 /**
  * @swagger
@@ -38,7 +38,11 @@ const authRouter = express.Router();
  *       400:
  *         description: Validation error
  */
-authRouter.post('/register', validateBody(userSchemas.authRegisterSchema), authController.register);
+authRouter.post(
+  '/register',
+  validateBody(userSchemas.authRegisterSchema),
+  authController.register
+);
 
 /**
  * @swagger
@@ -66,7 +70,11 @@ authRouter.post('/register', validateBody(userSchemas.authRegisterSchema), authC
  *       401:
  *         description: Invalid credentials
  */
-authRouter.post('/login', validateBody(userSchemas.authLoginSchema), authController.login);
+authRouter.post(
+  '/login',
+  validateBody(userSchemas.authLoginSchema),
+  authController.login
+);
 
 /**
  * @swagger
@@ -130,7 +138,11 @@ authRouter.get('/current', authenticate, authController.getCurrent);
  *       401:
  *         description: Unauthorized
  */
-authRouter.patch('/avatars', authenticate, upload.single('avatar'), authController.updateAvatar);
-
+authRouter.patch(
+  '/avatars',
+  authenticate,
+  upload.single(AVATAR_FIELD),
+  authController.updateAvatar
+);
 
 export default authRouter;
