@@ -1,14 +1,20 @@
 import * as recipesService from '../services/recipeService.js';
 import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
+import { getPagination } from '../helpers/pagination.js';
 
 export const getAllRecipes = async (req, res) => {
-  const recipes = await recipesService.getAllRecipes(req.query);
+  const { page = 1, limit = 12, ...query } = req.query;
+  const { recipes, total } = await recipesService.getAllRecipes(
+    query,
+    page,
+    limit
+  );
 
   if (!recipes) {
     throw HttpError(404, 'Recipes not found');
   }
-  const recipesResponse = recipes.map((recipeData) => {
+  const data = recipes.map((recipeData) => {
     const recipe = recipeData.toJSON();
     recipe.ingredients = recipe.ingredients.map((ing) => ({
       id: ing.id,
@@ -25,7 +31,8 @@ export const getAllRecipes = async (req, res) => {
       areaId: undefined,
     };
   });
-  res.json(recipesResponse);
+  const pagination = getPagination(total, page, limit);
+  res.json({ data, pagination });
 };
 
 export const updateRecipeStatus = async (req, res) => {

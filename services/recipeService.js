@@ -3,62 +3,88 @@ import { Ingredient } from '../db/index.js';
 import { Category, User, Area } from '../db/index.js';
 import { Op } from 'sequelize';
 
-export const getAllRecipes = async (query) => {
+export const getAllRecipes = async (query, page, limit) => {
   const { category, area, ingredient } = query;
-  return Recipe.findAll({
+  const offset = (page - 1) * limit;
+  const categoryFilter = {
+    model: Category,
+    as: 'category',
+    attributes: ['name'],
+    ...(category
+      ? {
+          where: {
+            name: {
+              [Op.iLike]: category,
+            },
+          },
+        }
+      : {}),
+  };
+  const areaFilter = {
+    model: Area,
+    as: 'area',
+    attributes: ['name'],
+    ...(area
+      ? {
+          where: {
+            name: {
+              [Op.iLike]: area,
+            },
+          },
+        }
+      : {}),
+  };
+
+  const ingredientFilter = ingredient
+    ? [
+        {
+          model: Ingredient,
+          as: 'ingredientFilter',
+          where: {
+            name: {
+              [Op.iLike]: ingredient,
+            },
+          },
+          required: true,
+          attributes: [],
+          through: {
+            attributes: [],
+          },
+        },
+      ]
+    : [];
+
+  const allIngredientsInclude = {
+    model: Ingredient,
+    as: 'ingredients',
+    attributes: ['name', 'img'],
+    through: {
+      attributes: ['measure'],
+    },
+  };
+
+  const total = await Recipe.count({
+    include: [categoryFilter, areaFilter, ...ingredientFilter],
+  });
+
+  const recipes = await Recipe.findAll({
     include: [
-      {
-        model: Category,
-        as: 'category',
-        attributes: ['name'],
-        ...(category
-          ? {
-              where: {
-                name: {
-                  [Op.iLike]: category,
-                },
-              },
-            }
-          : {}),
-      },
-      {
-        model: Area,
-        as: 'area',
-        attributes: ['name'],
-        ...(area
-          ? {
-              where: {
-                name: {
-                  [Op.iLike]: area,
-                },
-              },
-            }
-          : {}),
-      },
+      categoryFilter,
+      areaFilter,
+      ...ingredientFilter,
       {
         model: User,
         as: 'owner',
         attributes: ['id', 'name', 'avatarURL'],
       },
-      {
-        model: Ingredient,
-        as: 'ingredients',
-        attributes: ['name', 'img'],
-        through: {
-          attributes: ['measure'],
-        },
-        ...(ingredient
-          ? {
-              where: {
-                name: {
-                  [Op.iLike]: ingredient,
-                },
-              },
-            }
-          : {}),
-      },
+      allIngredientsInclude,
     ],
+    order: [['id', 'ASC']],
+    limit,
+    offset,
   });
+
+  return { recipes, total };
 };
 
 export const getRecipeById = async (query) => {
