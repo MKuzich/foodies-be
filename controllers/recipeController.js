@@ -2,6 +2,8 @@ import * as recipesService from '../services/recipeService.js';
 import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { getPagination } from '../helpers/pagination.js';
+import { fileUpload } from '../helpers/fileUpload.js';
+import { RECIPE_THUMB_FOLDER } from '../constants/files.js';
 
 const mapRecipe = (recipeData) => {
   const recipe = recipeData.toJSON();
@@ -51,7 +53,6 @@ export const getUserRecipes = async (req, res) => {
   if (!recipes) {
     throw HttpError(404, 'Recipes not found');
   }
-  // const data = recipes.map(mapRecipe);
   const pagination = getPagination(total, page, limit);
   res.json({ data: recipes, pagination });
 };
@@ -64,6 +65,40 @@ export const getRecipeById = async (req, res) => {
   }
   const recipe = mapRecipe(recipeData);
   res.json(recipe);
+};
+
+export const createRecipe = async (req, res) => {
+  const { id: ownerId } = req.user;
+
+  if (!req.file) {
+    throw HttpError(404, 'No file uploaded');
+  }
+
+  const filePath = req.file.path;
+  const thumb = (await fileUpload(filePath, RECIPE_THUMB_FOLDER)) || null;
+
+  const { ingredients, categoryId, areaId, ...recipeData } = req.body;
+
+  const getIngredientsData = (recipeId) =>
+    ingredients.map(({ id, measure }) => ({
+      recipeId,
+      ingredientId: id,
+      measure,
+    }));
+  const recipe = await recipesService.createRecipe(
+    {
+      ...recipeData,
+      categoryId: Number(categoryId),
+      areaId: Number(areaId),
+      ownerId,
+      thumb,
+    },
+    getIngredientsData
+  );
+  if (!recipe) {
+    throw HttpError(400, 'Failed to create recipe');
+  }
+  res.status(201).json(mapRecipe(recipe));
 };
 
 export const updateRecipeStatus = async (req, res) => {
@@ -84,5 +119,6 @@ export default {
   getAllRecipes: ctrlWrapper(getAllRecipes),
   getRecipeById: ctrlWrapper(getRecipeById),
   getUserRecipes: ctrlWrapper(getUserRecipes),
+  createRecipe: ctrlWrapper(createRecipe),
   updateRecipeStatus: ctrlWrapper(updateRecipeStatus),
 };

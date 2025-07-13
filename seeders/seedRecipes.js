@@ -22,7 +22,9 @@ const seedRecipes = async () => {
 
   const seedRecipeIngredient = getSeederWithData(
     recipeIngredientsData,
-    RecipeIngredient
+    RecipeIngredient,
+    null,
+    false
   );
 
   await seedRecipe();
