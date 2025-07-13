@@ -6,6 +6,10 @@ const Category = sequelize.define('category', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 // Category.sync();

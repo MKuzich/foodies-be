@@ -167,6 +167,27 @@ export const getFavoriteRecipes = async (req, res, next) => {
   res.json(favoriteRecipes);
 };
 
+export const getPopularRecipes = async (req, res) => {
+  const LIMIT = 4;
+  const topRecipeIds = await recipesService.getTopRecipeIds();
+  if (topRecipeIds.length < LIMIT) {
+    const neededCount = LIMIT - topRecipeIds.length;
+
+    const randomRecipes = await recipesService.getRandomRecipes(
+      topRecipeIds,
+      neededCount
+    );
+
+    const randomIds = randomRecipes.map((recipe) => recipe.id);
+    topRecipeIds.push(...randomIds);
+  }
+  const popularRecipes = await recipesService.getRecipesByIds(topRecipeIds);
+  if (!popularRecipes || popularRecipes.length === 0) {
+    throw HttpError(404, 'No popular recipes found');
+  }
+  res.json(popularRecipes);
+};
+
 export default {
   getAllRecipes: ctrlWrapper(getAllRecipes),
   getRecipeById: ctrlWrapper(getRecipeById),
@@ -176,4 +197,5 @@ export default {
   addRecipeToFavorites: ctrlWrapper(addRecipeToFavorites),
   removeRecipeFromFavorites: ctrlWrapper(removeRecipeFromFavorites),
   getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
+  getPopularRecipes: ctrlWrapper(getPopularRecipes),
 };

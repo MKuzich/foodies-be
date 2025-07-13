@@ -53,6 +53,8 @@ recipeRouter.get(
   recipesControllers.getFavoriteRecipes
 );
 
+recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
+
 recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
 
 /**
