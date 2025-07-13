@@ -42,7 +42,7 @@ export const getSeeder = (fileName, model, callback) => {
   };
 };
 
-export const getSeederWithData = (data, model, callback) => {
+export const getSeederWithData = (data, model, callback, isUpdateId = true) => {
   return async () => {
     try {
       let processedData = data;
@@ -51,6 +51,11 @@ export const getSeederWithData = (data, model, callback) => {
       }
 
       await model.bulkCreate(processedData);
+      if (isUpdateId) {
+        await sequelize.query(`
+        SELECT setval(pg_get_serial_sequence('"${model.getTableName()}"', 'id'), (SELECT MAX(id) FROM "${model.getTableName()}"));
+      `);
+      }
       console.log(`✅ ${model.getTableName().toUpperCase()} seeded!`);
     } catch (error) {
       console.error(`❌ Error seeding ${model.getTableName()}:`, error);

@@ -1,6 +1,6 @@
 import { Recipe } from '../db/index.js';
 import { Ingredient } from '../db/index.js';
-import { Category, User, Area } from '../db/index.js';
+import { Category, User, Area, RecipeIngredient } from '../db/index.js';
 import { Op } from 'sequelize';
 
 const categoryInclude = {
@@ -106,6 +106,29 @@ export const getRecipeById = async (id) => {
   return Recipe.findByPk(id, {
     include: [categoryInclude, areaInclude, ownerInclude, ingredientsInclude],
   });
+};
+
+export const createRecipe = async (data, getIngredientsData) => {
+  // console.log('Creating recipe with data:', data);
+
+  // try {
+  //   const recipe = await Recipe.create(data);
+  //   const ingredientsData = getIngredientsData(recipe.id);
+  //   await RecipeIngredient.bulkCreate(ingredientsData);
+  //   return recipe;
+  // } catch (error) {
+  //   console.error('Sequelize validation error:', error.errors || error.message);
+
+  //   return res.status(400).json({
+  //     message: 'Recipe creation failed',
+  //     errors: error.errors?.map((e) => e.message) || error.message,
+  //   });
+  // }
+
+  const recipe = await Recipe.create(data);
+  const ingredientsData = getIngredientsData(recipe.id);
+  await RecipeIngredient.bulkCreate(ingredientsData);
+  return getRecipeById(recipe.id);
 };
 
 export const updateRecipeStatus = async (query, data) => {
