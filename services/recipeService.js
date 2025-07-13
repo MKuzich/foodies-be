@@ -114,16 +114,3 @@ export const createRecipe = async (data, getIngredientsData) => {
   await RecipeIngredient.bulkCreate(ingredientsData);
   return getRecipeById(recipe.id);
 };
-
-export const updateRecipeStatus = async (query, data) => {
-  const recipe = await getRecipeById(query);
-  if (!recipe) return null;
-  await recipe.update(data);
-  return recipe;
-};
-
-export const recipesByStatus = async (query) => {
-  const recipes = await allRecipes(query);
-  if (!recipes) return null;
-  return recipes;
-};

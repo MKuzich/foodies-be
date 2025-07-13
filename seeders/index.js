@@ -3,7 +3,7 @@ import { seedUsers } from './seedUsers.js';
 import { seedCategories } from './seedCategories.js';
 import { seedAreas } from './seedAreas.js';
 import { seedIngredients } from './seedIngredients.js';
-// import { seedTestimonials } from './seedTestimonials.js';
+import { seedTestimonials } from './seedTestimonials.js';
 import { seedRecipes } from './seedRecipes.js';
 
 const seed = async () => {
@@ -13,7 +13,7 @@ const seed = async () => {
     await seedCategories();
     await seedAreas();
     await seedIngredients();
-    // await seedTestimonials();
+    await seedTestimonials();
     await seedRecipes();
     console.log('✅ Seeding completed');
     process.exit(0);

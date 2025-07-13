@@ -121,18 +121,50 @@ export const deleteRecipe = async (req, res) => {
   res.status(204).json(recipe);
 };
 
-export const updateRecipeStatus = async (req, res) => {
-  const { id } = req.params;
-  const { id: owner } = req.user;
-  const result = await recipesService.updateRecipeStatus(
-    { id, owner },
-    req.body
-  );
-  if (!result) {
-    throw HttpError(404, 'Not found');
+export const addRecipeToFavorites = async (req, res) => {
+  const user = req.user;
+  const recipeId = Number(req.params.id);
+  const recipe = await recipesService.getRecipeById(recipeId);
+
+  if (!recipe) {
+    return res.status(404).json({ message: 'Recipe not found' });
   }
 
-  res.json(result);
+  const isAlreadyFavorite = await user.hasFavoriteRecipe(recipe);
+  if (isAlreadyFavorite) {
+    return res.status(409).json({ message: 'Recipe already in favorites' });
+  }
+  await user.addFavoriteRecipe(recipe);
+  res.status(201).json({ message: 'Recipe added to favorites' });
+};
+
+export const removeRecipeFromFavorites = async (req, res) => {
+  const user = req.user;
+  const recipeId = Number(req.params.id);
+  const recipe = await recipesService.getRecipeById(recipeId);
+
+  if (!recipe) {
+    return res.status(404).json({ message: 'Recipe not found' });
+  }
+
+  const isAlreadyFavorite = await user.hasFavoriteRecipe(recipe);
+  if (!isAlreadyFavorite) {
+    return res.status(404).json({ message: 'Recipe is not in favorites' });
+  }
+
+  await user.removeFavoriteRecipe(recipe);
+  res.status(204).send();
+};
+
+export const getFavoriteRecipes = async (req, res, next) => {
+  const user = req.user;
+
+  const favoriteRecipes = await user.getFavoriteRecipes({
+    attributes: ['id', 'title', 'description', 'thumb'],
+    joinTableAttributes: [],
+  });
+
+  res.json(favoriteRecipes);
 };
 
 export default {
@@ -141,5 +173,7 @@ export default {
   getUserRecipes: ctrlWrapper(getUserRecipes),
   createRecipe: ctrlWrapper(createRecipe),
   deleteRecipe: ctrlWrapper(deleteRecipe),
-  updateRecipeStatus: ctrlWrapper(updateRecipeStatus),
+  addRecipeToFavorites: ctrlWrapper(addRecipeToFavorites),
+  removeRecipeFromFavorites: ctrlWrapper(removeRecipeFromFavorites),
+  getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
 };

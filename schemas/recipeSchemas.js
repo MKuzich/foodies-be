@@ -16,7 +16,3 @@ export const createRecipeSchema = Joi.object({
     .required(),
   time: Joi.string().required(),
 });
-
-export const updateStatusSchema = Joi.object({
-  favorite: Joi.boolean().required(),
-});

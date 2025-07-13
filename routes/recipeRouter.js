@@ -1,9 +1,6 @@
 import express from 'express';
 import recipesControllers from '../controllers/recipeController.js';
-import {
-  updateStatusSchema,
-  createRecipeSchema,
-} from '../schemas/recipeSchemas.js';
+import { createRecipeSchema } from '../schemas/recipeSchemas.js';
 import authenticate from '../middlewares/authenticate.js';
 import parseIngredients from '../middlewares/parseIngredients.js';
 import { upload } from '../middlewares/upload.js';
@@ -50,13 +47,19 @@ recipeRouter.post(
   recipesControllers.createRecipe
 );
 
+recipeRouter.get(
+  '/favorites',
+  authenticate,
+  recipesControllers.getFavoriteRecipes
+);
+
 recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
 
 /**
  * @swagger
  * /recipes/{id}/favorite:
- *   patch:
- *     summary: Add or remove a recipe from favorites
+ *   post:
+ *     summary: Add a recipe to user's favorites
  *     tags: [Recipes]
  *     security:
  *       - bearerAuth: []
@@ -65,30 +68,28 @@ recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
  *         name: id
  *         required: true
  *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               favorite:
- *                 type: boolean
+ *           type: integer
+ *         description: ID of the recipe to add to favorites
  *     responses:
- *       200:
- *         description: Favorite status updated
- *       400:
- *         description: Invalid input
+ *       201:
+ *         description: Recipe added to favorites
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized – token missing or invalid
  *       404:
- *         description: Recipe not found
+ *         description: Recipe not found or already in favorites
+ *       500:
+ *         description: Server error
  */
-recipeRouter.patch(
+recipeRouter.post(
   '/:id/favorite',
-  validateBody(updateStatusSchema),
-  recipesControllers.updateRecipeStatus
+  authenticate,
+  recipesControllers.addRecipeToFavorites
+);
+
+recipeRouter.delete(
+  '/:id/favorite',
+  authenticate,
+  recipesControllers.removeRecipeFromFavorites
 );
 
 /**

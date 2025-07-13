@@ -5,7 +5,7 @@ import Ingredient from './Ingredient.js';
 import RecipeIngredient from './RecipeIngredient.js';
 import Category from './Category.js';
 import Area from './Area.js';
-// import Testimonial from './Testimonial.js';
+import Testimonial from './Testimonial.js';
 
 Follow.belongsTo(User, { as: 'follower', foreignKey: 'followerId' });
 Follow.belongsTo(User, { as: 'following', foreignKey: 'followingId' });
@@ -86,10 +86,32 @@ Area.hasMany(Recipe, {
   as: 'recipes',
 });
 
-// User.hasMany(Testimonial, { foreignKey: 'owner' });
-// Testimonial.belongsTo(User, { foreignKey: 'owner', as: 'user' });
+User.belongsToMany(Recipe, {
+  through: 'user_favorites',
+  as: 'favoriteRecipes',
+  foreignKey: 'userId',
+  otherKey: 'recipeId',
+});
 
-// Recipe.hasMany(Testimonial, { foreignKey: 'recipeId' });
-// Testimonial.belongsTo(Recipe, { foreignKey: 'recipeId' });
+Recipe.belongsToMany(User, {
+  through: 'user_favorites',
+  as: 'usersWhoFavorited',
+  foreignKey: 'recipeId',
+  otherKey: 'userId',
+});
 
-export { User, Follow, Recipe, Ingredient, RecipeIngredient, Category, Area };
+Testimonial.belongsTo(User, {
+  foreignKey: 'owner',
+  as: 'user',
+});
+
+export {
+  User,
+  Follow,
+  Recipe,
+  Ingredient,
+  RecipeIngredient,
+  Category,
+  Area,
+  Testimonial,
+};
