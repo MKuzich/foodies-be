@@ -38,6 +38,28 @@ const recipeRouter = express.Router();
  *         description: Server error
  */
 recipeRouter.get('/', recipesControllers.getAllRecipes);
+
+/**
+ * @swagger
+ * /recipes:
+ *   post:
+ *     summary: Create a new recipe
+ *     tags: [Recipes]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               ingredients:
+ */
 recipeRouter.post(
   '/',
   authenticate,
@@ -47,14 +69,81 @@ recipeRouter.post(
   recipesControllers.createRecipe
 );
 
+
+/**
+ * @swagger
+ * /recipes/favorites:
+ *   get:
+ *     summary: Get list of favorite recipes
+ *     tags: [Recipes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of favorite recipes
+ */
 recipeRouter.get(
   '/favorites',
   authenticate,
   recipesControllers.getFavoriteRecipes
 );
 
+/**
+* @swagger
+* /recipes/popular:
+*   get:
+*     summary: Get list of popular recipes
+*     tags: [Recipes]
+*     responses:
+*       200:
+*         description: List of popular recipes
+*/
 recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
 
+
+/**
+ * @swagger
+ * /recipes/{id}:
+ *   get:
+ *     summary: Get recipe by ID
+ *     tags: [Recipes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Recipe details
+ *       404:
+ *         description: Recipe not found
+ */
+recipeRouter.get('/:id', recipesControllers.getRecipeById); 
+
+
+/**
+ * @swagger
+ * /recipes/{id}:
+ *   delete:
+ *     summary: Delete recipe by ID
+ *     tags: [Recipes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Recipe deleted successfully
+ *       401:
+ *         description: Unauthorized – token missing or invalid
+ *       404:
+ *         description: Recipe not found
+ */
 recipeRouter.delete('/:id', authenticate, recipesControllers.deleteRecipe);
 
 /**
@@ -88,30 +177,33 @@ recipeRouter.post(
   recipesControllers.addRecipeToFavorites
 );
 
+
+/**
+ * @swagger
+ * /recipes/{id}/favorite:
+ *   delete:
+ *     summary: Remove a recipe from user's favorites
+ *     tags: [Recipes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the recipe to remove from favorites
+ *     responses:
+ *       200:
+ *         description: Recipe removed from favorites
+ *       401:
+ *         description: Unauthorized – token missing or invalid
+ */
 recipeRouter.delete(
   '/:id/favorite',
   authenticate,
   recipesControllers.removeRecipeFromFavorites
 );
 
-/**
- * @swagger
- * /recipes/{id}:
- *   get:
- *     summary: Get recipe details by ID
- *     tags: [Recipes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Recipe details
- *       404:
- *         description: Recipe not found
- */
-recipeRouter.get('/:id', recipesControllers.getRecipeById);
 
 export default recipeRouter;
