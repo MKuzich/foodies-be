@@ -78,7 +78,7 @@ export const findUserById = async (id) => {
 };
 
 export const countCreatedRecipes = async (userId) => {
-  return Recipe.count({ where: { owner: String(userId) } });
+  return Recipe.count({ where: { ownerId: String(userId) } });
 };
 
 export const countFavorites = async (user) => {
