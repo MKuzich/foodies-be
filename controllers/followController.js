@@ -102,7 +102,7 @@ const followUserController = async (req, res) => {
     isFollowed: true,
   };
 
-  res.status(201).json({result});
+  res.status(201).json({ result });
 };
 
 const unfollowUserController = async (req, res) => {

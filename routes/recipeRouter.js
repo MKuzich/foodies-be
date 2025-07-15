@@ -69,7 +69,6 @@ recipeRouter.post(
   recipesControllers.createRecipe
 );
 
-
 /**
  * @swagger
  * /recipes/favorites:
@@ -89,17 +88,16 @@ recipeRouter.get(
 );
 
 /**
-* @swagger
-* /recipes/popular:
-*   get:
-*     summary: Get list of popular recipes
-*     tags: [Recipes]
-*     responses:
-*       200:
-*         description: List of popular recipes
-*/
+ * @swagger
+ * /recipes/popular:
+ *   get:
+ *     summary: Get list of popular recipes
+ *     tags: [Recipes]
+ *     responses:
+ *       200:
+ *         description: List of popular recipes
+ */
 recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
-
 
 /**
  * @swagger
@@ -119,8 +117,7 @@ recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
  *       404:
  *         description: Recipe not found
  */
-recipeRouter.get('/:id', recipesControllers.getRecipeById); 
-
+recipeRouter.get('/:id', recipesControllers.getRecipeById);
 
 /**
  * @swagger
@@ -177,7 +174,6 @@ recipeRouter.post(
   recipesControllers.addRecipeToFavorites
 );
 
-
 /**
  * @swagger
  * /recipes/{id}/favorite:
@@ -204,6 +200,5 @@ recipeRouter.delete(
   authenticate,
   recipesControllers.removeRecipeFromFavorites
 );
-
 
 export default recipeRouter;

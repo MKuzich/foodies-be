@@ -1,7 +1,6 @@
 import * as userService from '../services/userService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 
-
 const getUserInfoController = async (req, res) => {
   const authUserId = Number(req.user.id);
   const targetUserId = Number(req.params.id);

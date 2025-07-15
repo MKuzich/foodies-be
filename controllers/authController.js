@@ -2,7 +2,10 @@ import * as userService from '../services/userService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/httpError.js';
 import { AVATAR_FOLDER } from '../constants/files.js';
-import { fileUpload } from '../helpers/fileStorage.js';
+import {
+  deleteImageFromCloudinary,
+  fileUpload,
+} from '../helpers/fileStorage.js';
 
 const register = async (req, res) => {
   const user = await userService.registerUser(req.body);
@@ -30,17 +33,20 @@ export const getCurrent = async (req, res) => {
 };
 
 export const updateAvatar = async (req, res) => {
-  const { id } = req.user;
+  const { id, avatarURL } = req.user;
 
   if (!req.file) {
     throw HttpError(404, 'No file uploaded');
   }
+  if (avatarURL.includes('res.cloudinary.com')) {
+    await deleteImageFromCloudinary(avatarURL);
+  }
+  const uploadedAvatarURL =
+    (await fileUpload(req.file.path, AVATAR_FOLDER)) || null;
 
-  const avatarURL = (await fileUpload(req.file.path, AVATAR_FOLDER)) || null;
+  await userService.updateAvatar(id, uploadedAvatarURL);
 
-  await userService.updateAvatar(id, avatarURL);
-
-  res.json({ avatarURL });
+  res.json({ uploadedAvatarURL });
 };
 
 export default {
