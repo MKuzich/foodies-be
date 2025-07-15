@@ -1,9 +1,14 @@
-import { Recipe } from '../db/index.js';
-import { Ingredient } from '../db/index.js';
-import { Category, User, Area, RecipeIngredient } from '../db/index.js';
+import {
+  Category,
+  Recipe,
+  Ingredient,
+  User,
+  Area,
+  RecipeIngredient,
+} from '../db/index.js';
 import { Op } from 'sequelize';
 import sequelize from '../db/sequelize.js';
-import e from 'express';
+
 
 const categoryInclude = {
   model: Category,
