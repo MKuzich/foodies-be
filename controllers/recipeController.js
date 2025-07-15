@@ -62,11 +62,14 @@ export const getUserRecipes = async (req, res) => {
 
 export const getRecipeById = async (req, res) => {
   const { id } = req.params;
-  const recipeData = await recipesService.getRecipeById(id);
+  const currentUserId = req.user?.id ?? null;
+
+  const recipeData = await recipesService.getRecipeById(id, currentUserId);
   if (!recipeData) {
     throw HttpError(404, 'Recipe not found');
   }
   const recipe = mapRecipe(recipeData);
+  recipe.isFavorite = currentUserId && recipeData.usersWhoFavorited?.length > 0;
   res.json(recipe);
 };
 
