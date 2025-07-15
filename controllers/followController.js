@@ -1,43 +1,16 @@
 import * as followService from '../services/followService.js';
 import * as userService from '../services/userService.js';
-import * as recipesService from '../services/recipeService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
-import { getPageParams } from '../helpers/pagination.js';
 import HttpError from '../helpers/httpError.js';
+import { getPageParams, getPagination } from '../helpers/pagination.js';
+import { mapUserWithExtras } from '../helpers/mapUserWithExtras.js';
+import {getFollowersWithExtras} from '../helpers/getFollowersWithExtras.js';
 
-const buildPagination = (total, page, limit) => ({
-  total,
-  page,
-  limit,
-  pages: Math.ceil(total / limit),
-});
-
-const mapUserWithExtras = async (
-  user,
-  authUserId,
-  isFollowedOverride = null
-) => {
-  const isFollowed =
-    isFollowedOverride !== null
-      ? isFollowedOverride
-      : await userService.checkIfFollowed(user.id, authUserId);
-
-  const [popularRecipes, ownRecipes] = await Promise.all([
-    recipesService.getTopRecipesByUser(user.id, 4),
-    recipesService.countRecipesByUser(user.id),
-  ]);
-
-  return {
-    ...user.toPublicJSON(),
-    isFollowed,
-    ownRecipes,
-    popularRecipes,
-  };
-};
 
 const getFollowingController = async (req, res) => {
   const { page, limit } = getPageParams(req.query);
-  const user = await userService.findUserById(req.user.id);
+  const currentUserId = Number(req.user.id);
+  const user = await userService.findUserById(currentUserId);
 
   const total = await userService.countFollowing(user);
   const followingUsers = await followService.getFollowingUsers(
@@ -47,12 +20,20 @@ const getFollowingController = async (req, res) => {
   );
 
   const results = await Promise.all(
-    followingUsers.map((followingUser) =>
-      mapUserWithExtras(followingUser, req.user.id, true)
-    )
+    followingUsers.map(async (followingUser) => {
+      const [extras, isFollowed] = await Promise.all([
+        mapUserWithExtras(followingUser),
+        userService.checkIfFollowed(currentUserId, followingUser.id),
+      ]);
+
+      return {
+        ...extras,
+        isFollowed,
+      };
+    })
   );
 
-  res.json({ results, pagination: buildPagination(total, page, limit) });
+  res.json({ results, pagination: getPagination(total, page, limit) });
 };
 
 const getFollowersController = async (req, res) => {
@@ -68,10 +49,21 @@ const getFollowersController = async (req, res) => {
   );
 
   const results = await Promise.all(
-    followers.map((follower) => mapUserWithExtras(follower, authUserId))
+    followers.map(async (follower) => {
+      const isFollowing = await userService.checkIfFollowed(
+        authUserId,
+        follower.id
+      );
+      const extras = await mapUserWithExtras(follower);
+
+      return {
+        ...extras,
+        isFollowing,
+      };
+    })
   );
 
-  res.json({ results, pagination: buildPagination(total, page, limit) });
+  res.json({ results, pagination: getPagination(total, page, limit) });
 };
 
 const followUserController = async (req, res) => {
@@ -95,14 +87,22 @@ const followUserController = async (req, res) => {
     await userService.findUserById(followerId)
   );
 
-  const result = {
-    ...userToFollow.toPublicJSON(),
-    followersCount,
-    followingCount,
-    isFollowed: true,
-  };
+  const followers = await getFollowersWithExtras({
+    targetUserId: followingId,
+    authUserId: followerId,
+    page: 1,
+    limit: 5,
+  });
 
-  res.status(201).json({ result });
+  res.status(201).json({
+    target: {
+      ...userToFollow.toPublicJSON(),
+      followersCount,
+      followingCount,
+      isFollowed: true,
+    },
+    followers,
+  });
 };
 
 const unfollowUserController = async (req, res) => {
@@ -119,11 +119,21 @@ const unfollowUserController = async (req, res) => {
     await userService.findUserById(followerId)
   );
 
+  const followers = await getFollowersWithExtras({
+    targetUserId: followingId,
+    authUserId: followerId,
+    page: 1,
+    limit: 5,
+  });
+
   res.json({
-    ...userToUnfollow.toPublicJSON(),
-    followersCount,
-    followingCount,
-    isFollowed: false,
+    target: {
+      ...userToUnfollow.toPublicJSON(),
+      followersCount,
+      followingCount,
+      isFollowed: false,
+    },
+    followers,
   });
 };
 
