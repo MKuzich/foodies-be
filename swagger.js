@@ -117,9 +117,10 @@ export const swaggerOptions = {
         Testimonial: {
           type: 'object',
           properties: {
-            name: { type: 'string' },
-            message: { type: 'string' },
-            avatarURL: { type: 'string' },
+            id: { type: 'integer' },
+            testimonial: { type: 'string' },
+            recipeId: { type: 'integer' },
+            owner: { type: 'integer' },
           },
         },
         StringArray: {
