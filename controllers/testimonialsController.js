@@ -4,7 +4,8 @@ import { Recipe } from '../db/index.js';
 import HttpError from '../helpers/httpError.js';
 
 export const getTestimonialsController = async (req, res) => {
-  const result = await testimonialsService.getTestimonials();
+  const { limit = 3 } = req.query;
+  const result = await testimonialsService.getTestimonials({ limit });
   const testimonials = result.map(({ id, testimonial, user }) => ({
     id,
     testimonial,

@@ -1,6 +1,7 @@
 import { Testimonial, User } from '../db/index.js';
+import sequelize from '../db/sequelize.js';
 
-export const getTestimonials = async () => {
+export const getTestimonials = async ({ limit }) => {
   return Testimonial.findAll({
     attributes: ['id', 'testimonial'],
     include: {
@@ -8,8 +9,8 @@ export const getTestimonials = async () => {
       as: 'user',
       attributes: ['id', 'name', 'avatarURL'],
     },
-    order: [['createdAt', 'DESC']],
-    limit: 10,
+    order: sequelize.random(),
+    limit,
   });
 };
 
