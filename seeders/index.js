@@ -13,8 +13,8 @@ const seed = async () => {
     await seedCategories();
     await seedAreas();
     await seedIngredients();
-    await seedTestimonials();
     await seedRecipes();
+    await seedTestimonials();
     console.log('✅ Seeding completed');
     process.exit(0);
   } catch (error) {

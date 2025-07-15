@@ -6,12 +6,20 @@ const Testimonial = sequelize.define('testimonial', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  recipeId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'recipes',
+      key: 'id',
+    },
+  },
   owner: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
 });
 
-// Testimonial.sync();
+// Testimonial.sync({ force: true });
 
 export default Testimonial;

@@ -1,4 +1,7 @@
 import express from 'express';
+import authenticate from '../middlewares/authenticate.js';
+import { testimonialSchema } from '../schemas/testimonialSchemas.js';
+import validateBody from '../decorators/validateBody.js';
 import controllers from '../controllers/testimonialsController.js';
 
 const testimonialRouter = express.Router();
@@ -19,15 +22,123 @@ const testimonialRouter = express.Router();
  *               items:
  *                 type: object
  *                 properties:
- *                   name:
+ *                   id:
+ *                     type: integer
+ *                   testimonial:
  *                     type: string
- *                   message:
- *                     type: string
- *                   avatarURL:
+ *                   ownerName:
  *                     type: string
  *       500:
  *         description: Server error
  */
-testimonialRouter.get('/', controllers.getTestimonials);
+testimonialRouter.get('/', controllers.getTestimonialsController);
+
+/**
+ * @swagger
+ * /testimonials:
+ *   post:
+ *     summary: Create a new testimonial
+ *     tags: [Testimonials]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: The testimonial text
+ *               recipeId:
+ *                 type: string
+ *                 description: The ID of the recipe
+ *             required:
+ *               - text
+ *               - recipeId
+ *     responses:
+ *       201:
+ *         description: Testimonial created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 testimonial:
+ *                   type: string
+ *                 owner:
+ *                   type: integer
+ *                 recipeId:
+ *                   type: integer
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *       500:
+ *         description: Server error
+ */
+testimonialRouter.post(
+	'/', 
+	authenticate, 
+	validateBody(testimonialSchema),
+	controllers.createTestimonialController
+);
+
+/**
+ * @swagger
+ * /testimonials/{recipeId}:
+ *   get:
+ *     summary: Get testimonials for a specific recipe
+ *     tags: [Testimonials]
+ *     parameters:
+ *       - in: path
+ *         name: recipeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the recipe
+ *     responses:
+ *       200:
+ *         description: List of testimonials for the recipe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   testimonial:
+ *                     type: string
+ *                   recipeId:
+ *                     type: integer
+ *                   owner:
+ *                     type: integer
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                   user:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       avatarURL:
+ *                         type: string
+ *                         nullable: true
+ *       500:
+ *         description: Server error
+ */
+testimonialRouter.get('/:recipeId', controllers.getTestimonialsByRecipeIdController);
 
 export default testimonialRouter;

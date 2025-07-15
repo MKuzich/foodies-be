@@ -100,9 +100,18 @@ Recipe.belongsToMany(User, {
   otherKey: 'userId',
 });
 
+User.hasMany(Testimonial, { foreignKey: 'owner', as: 'testimonials' });
+
 Testimonial.belongsTo(User, {
   foreignKey: 'owner',
   as: 'user',
+});
+
+Recipe.hasMany(Testimonial, { foreignKey: 'recipeId', as: 'testimonials' });
+
+Testimonial.belongsTo(Recipe, {
+  foreignKey: 'recipeId',
+  as: 'recipe',
 });
 
 export {
