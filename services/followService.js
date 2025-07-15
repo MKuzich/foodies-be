@@ -1,6 +1,5 @@
 import { Follow } from '../db/index.js';
 
-
 export const followUser = async (followerId, followingId) => {
   return Follow.findOrCreate({
     where: { followerId, followingId },

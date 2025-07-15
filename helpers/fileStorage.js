@@ -30,3 +30,15 @@ export const deleteImageFromCloudinary = async (imageUrl) => {
     console.warn('Cloudinary delete failed:', error.message);
   }
 };
+
+export const deleteAllImagesFromCloudinary = async () => {
+  try {
+    const result = await cloudinary.api.delete_all_resources();
+    console.log('All images from Cloudinary deleted:', result);
+  } catch (err) {
+    console.error(
+      'Failed to delete all resources from Cloudinary:',
+      err.message
+    );
+  }
+};

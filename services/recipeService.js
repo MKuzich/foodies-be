@@ -200,7 +200,7 @@ export const getTopRecipesByUser = async (userId, limit = 4) => {
   return Recipe.findAll({
     where: { id: topIds },
     attributes: ['id', 'title', 'description', 'thumb'],
-    include: [ownerInclude], 
+    include: [ownerInclude],
     order: [
       [
         sequelize.literal(

@@ -5,6 +5,7 @@ import { seedAreas } from './seedAreas.js';
 import { seedIngredients } from './seedIngredients.js';
 import { seedTestimonials } from './seedTestimonials.js';
 import { seedRecipes } from './seedRecipes.js';
+import { deleteAllImagesFromCloudinary } from '../helpers/fileStorage.js';
 
 const seed = async () => {
   try {
@@ -16,6 +17,9 @@ const seed = async () => {
     await seedRecipes();
     await seedTestimonials();
     console.log('✅ Seeding completed');
+
+    await deleteAllImagesFromCloudinary();
+
     process.exit(0);
   } catch (error) {
     console.error('❌ Seeding failed:', error);
