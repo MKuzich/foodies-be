@@ -1,5 +1,6 @@
 import * as followService from '../services/followService.js';
 import * as userService from '../services/userService.js';
+import * as recipesService from '../services/recipeService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { getPageParams } from '../helpers/pagination.js';
 import HttpError from '../helpers/httpError.js';
@@ -17,10 +18,24 @@ const getFollowingController = async (req, res) => {
   const user = await userService.findUserById(req.user.id);
 
   const total = await userService.countFollowing(user);
-  const results = await followService.getFollowingUsers(
+  const followingUsers = await followService.getFollowingUsers(
     user,
     limit,
     (page - 1) * limit
+  );
+
+  const results = await Promise.all(
+    followingUsers.map(async (followingUser) => {
+      const popularRecipes = await recipesService.getTopRecipesByUser(
+        followingUser.id,
+        4
+      );
+
+      return {
+        ...followingUser.toPublicJSON(),
+        popularRecipes,
+      };
+    })
   );
 
   res.json({ results, pagination: buildPagination(total, page, limit) });
@@ -28,18 +43,38 @@ const getFollowingController = async (req, res) => {
 
 const getFollowersController = async (req, res) => {
   const { page, limit } = getPageParams(req.query);
-  const user = await userService.findUserById(Number(req.params.id));
+  const targetUser = await userService.findUserById(Number(req.params.id));
+  const authUserId = Number(req.user.id);
 
-  const total = await userService.countFollowers(user);
-  const results = await followService.getFollowersOfUser(
-    user,
+  const total = await userService.countFollowers(targetUser);
+  const followers = await followService.getFollowersOfUser(
+    targetUser,
     limit,
     (page - 1) * limit
   );
 
+  const results = await Promise.all(
+    followers.map(async (follower) => {
+      const isFollowed = await userService.checkIfFollowed(
+        follower.id,
+        authUserId
+      );
+
+      const popularRecipes = await recipesService.getTopRecipesByUser(
+        follower.id,
+        4
+      );
+
+      return {
+        ...follower.toPublicJSON(),
+        isFollowed,
+        popularRecipes,
+      };
+    })
+  );
+
   res.json({ results, pagination: buildPagination(total, page, limit) });
 };
-
 const followUserController = async (req, res) => {
   const followerId = req.user.id;
   const followingId = Number(req.params.id);

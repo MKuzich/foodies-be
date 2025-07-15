@@ -164,3 +164,50 @@ export const getRecipesByIds = async (recipeIds) => {
     ],
   });
 };
+
+export const getTopRecipeIdsByUser = async (userId, limit = 4) => {
+  const results = await sequelize.query(
+    `
+    SELECT r.id
+    FROM recipes r
+    LEFT JOIN user_favorites uf ON r.id = uf."recipeId"
+    WHERE r."ownerId" = :userId
+    GROUP BY r.id
+    ORDER BY COUNT(uf."recipeId") DESC
+    LIMIT :limit
+    `,
+    {
+      replacements: { userId, limit },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return results.map((r) => r.id);
+};
+
+export const getTopRecipesByUser = async (userId, limit = 4) => {
+  const topIds = await getTopRecipeIdsByUser(userId, limit);
+
+  if (topIds.length === 0) {
+    return Recipe.findAll({
+      where: { ownerId: userId },
+      order: sequelize.random(),
+      limit,
+      attributes: ['id', 'title', 'description', 'thumb'],
+    });
+  }
+
+  return Recipe.findAll({
+    where: { id: topIds },
+    attributes: ['id', 'title', 'description', 'thumb'],
+    include: [ownerInclude], 
+    order: [
+      [
+        sequelize.literal(
+          `ARRAY_POSITION(ARRAY[${topIds.reverse().join(',')}], "recipe"."id")`
+        ),
+        'DESC',
+      ],
+    ],
+  });
+};
