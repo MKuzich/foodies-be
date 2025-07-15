@@ -83,10 +83,10 @@ testimonialRouter.get('/', controllers.getTestimonialsController);
  *         description: Server error
  */
 testimonialRouter.post(
-	'/', 
-	authenticate, 
-	validateBody(testimonialSchema),
-	controllers.createTestimonialController
+  '/',
+  authenticate,
+  validateBody(testimonialSchema),
+  controllers.createTestimonialController
 );
 
 /**
@@ -139,6 +139,9 @@ testimonialRouter.post(
  *       500:
  *         description: Server error
  */
-testimonialRouter.get('/:recipeId', controllers.getTestimonialsByRecipeIdController);
+testimonialRouter.get(
+  '/:recipeId',
+  controllers.getTestimonialsByRecipeIdController
+);
 
 export default testimonialRouter;

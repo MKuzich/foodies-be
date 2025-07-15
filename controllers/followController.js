@@ -5,13 +5,35 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { getPageParams } from '../helpers/pagination.js';
 import HttpError from '../helpers/httpError.js';
 
-
 const buildPagination = (total, page, limit) => ({
   total,
   page,
   limit,
   pages: Math.ceil(total / limit),
 });
+
+const mapUserWithExtras = async (
+  user,
+  authUserId,
+  isFollowedOverride = null
+) => {
+  const isFollowed =
+    isFollowedOverride !== null
+      ? isFollowedOverride
+      : await userService.checkIfFollowed(user.id, authUserId);
+
+  const [popularRecipes, ownRecipes] = await Promise.all([
+    recipesService.getTopRecipesByUser(user.id, 4),
+    recipesService.countRecipesByUser(user.id),
+  ]);
+
+  return {
+    ...user.toPublicJSON(),
+    isFollowed,
+    ownRecipes,
+    popularRecipes,
+  };
+};
 
 const getFollowingController = async (req, res) => {
   const { page, limit } = getPageParams(req.query);
@@ -25,17 +47,9 @@ const getFollowingController = async (req, res) => {
   );
 
   const results = await Promise.all(
-    followingUsers.map(async (followingUser) => {
-      const popularRecipes = await recipesService.getTopRecipesByUser(
-        followingUser.id,
-        4
-      );
-
-      return {
-        ...followingUser.toPublicJSON(),
-        popularRecipes,
-      };
-    })
+    followingUsers.map((followingUser) =>
+      mapUserWithExtras(followingUser, req.user.id, true)
+    )
   );
 
   res.json({ results, pagination: buildPagination(total, page, limit) });
@@ -54,27 +68,12 @@ const getFollowersController = async (req, res) => {
   );
 
   const results = await Promise.all(
-    followers.map(async (follower) => {
-      const isFollowed = await userService.checkIfFollowed(
-        follower.id,
-        authUserId
-      );
-
-      const popularRecipes = await recipesService.getTopRecipesByUser(
-        follower.id,
-        4
-      );
-
-      return {
-        ...follower.toPublicJSON(),
-        isFollowed,
-        popularRecipes,
-      };
-    })
+    followers.map((follower) => mapUserWithExtras(follower, authUserId))
   );
 
   res.json({ results, pagination: buildPagination(total, page, limit) });
 };
+
 const followUserController = async (req, res) => {
   const followerId = req.user.id;
   const followingId = Number(req.params.id);
@@ -96,12 +95,14 @@ const followUserController = async (req, res) => {
     await userService.findUserById(followerId)
   );
 
-  res.status(201).json({
+  const result = {
     ...userToFollow.toPublicJSON(),
     followersCount,
     followingCount,
     isFollowed: true,
-  });
+  };
+
+  res.status(201).json({ result });
 };
 
 const unfollowUserController = async (req, res) => {

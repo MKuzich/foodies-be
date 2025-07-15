@@ -232,3 +232,9 @@ export const getTopRecipesByUser = async (userId, limit = 4) => {
     ],
   });
 };
+
+export const countRecipesByUser = async (userId) => {
+  return Recipe.count({
+    where: { ownerId: userId },
+  });
+};
