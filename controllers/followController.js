@@ -4,8 +4,6 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/httpError.js';
 import { getPageParams, getPagination } from '../helpers/pagination.js';
 import { mapUserWithExtras } from '../helpers/mapUserWithExtras.js';
-import {getFollowersWithExtras} from '../helpers/getFollowersWithExtras.js';
-
 
 const getFollowingController = async (req, res) => {
   const { page, limit } = getPageParams(req.query);
@@ -87,22 +85,14 @@ const followUserController = async (req, res) => {
     await userService.findUserById(followerId)
   );
 
-  const followers = await getFollowersWithExtras({
-    targetUserId: followingId,
-    authUserId: followerId,
-    page: 1,
-    limit: 5,
-  });
+  const result = {
+    ...userToFollow.toPublicJSON(),
+    followersCount,
+    followingCount,
+    isFollowed: true,
+  };
 
-  res.status(201).json({
-    target: {
-      ...userToFollow.toPublicJSON(),
-      followersCount,
-      followingCount,
-      isFollowed: true,
-    },
-    followers,
-  });
+  res.status(201).json(result);
 };
 
 const unfollowUserController = async (req, res) => {
@@ -119,22 +109,14 @@ const unfollowUserController = async (req, res) => {
     await userService.findUserById(followerId)
   );
 
-  const followers = await getFollowersWithExtras({
-    targetUserId: followingId,
-    authUserId: followerId,
-    page: 1,
-    limit: 5,
-  });
+  const result = {
+    ...userToUnfollow.toPublicJSON(),
+    followersCount,
+    followingCount,
+    isFollowed: false,
+  };
 
-  res.json({
-    target: {
-      ...userToUnfollow.toPublicJSON(),
-      followersCount,
-      followingCount,
-      isFollowed: false,
-    },
-    followers,
-  });
+  res.json(result);
 };
 
 export default {
