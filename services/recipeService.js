@@ -106,23 +106,7 @@ export const getAllRecipes = async ({
 
 export const getRecipeById = async (id, currentUserId = null) => {
   const recipe = await Recipe.findByPk(id, {
-    include: [
-      categoryInclude,
-      areaInclude,
-      ownerInclude,
-      ingredientsInclude,
-      ...(currentUserId
-        ? [
-            {
-              model: User,
-              as: 'usersWhoFavorited',
-              attributes: ['id'],
-              where: { id: currentUserId },
-              required: false,
-            },
-          ]
-        : []),
-    ],
+    include: [categoryInclude, areaInclude, ownerInclude, ingredientsInclude],
   });
 
   if (!recipe) {

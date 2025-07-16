@@ -6,6 +6,7 @@ import parseIngredients from '../middlewares/parseIngredients.js';
 import { upload } from '../middlewares/upload.js';
 import validateBody from '../decorators/validateBody.js';
 import { RECIPE_THUMB_FIELD } from '../constants/files.js';
+import optionalAuthenticate from '../middlewares/optionalAuthenticate.js';
 
 const recipeRouter = express.Router();
 
@@ -117,7 +118,11 @@ recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
  *       404:
  *         description: Recipe not found
  */
-recipeRouter.get('/:id', recipesControllers.getRecipeById);
+recipeRouter.get(
+  '/:id',
+  optionalAuthenticate,
+  recipesControllers.getRecipeById
+);
 
 /**
  * @swagger

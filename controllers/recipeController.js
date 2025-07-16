@@ -68,8 +68,9 @@ export const getRecipeById = async (req, res) => {
   if (!recipeData) {
     throw HttpError(404, 'Recipe not found');
   }
+  const isFavorite = await recipeData.hasUsersWhoFavorited(currentUserId);
   const recipe = mapRecipe(recipeData);
-  recipe.isFavorite = currentUserId && recipeData.usersWhoFavorited?.length > 0;
+  recipe.isFavorite = isFavorite;
   res.json(recipe);
 };
 
