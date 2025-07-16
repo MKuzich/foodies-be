@@ -161,14 +161,17 @@ export const removeRecipeFromFavorites = async (req, res) => {
 };
 
 export const getFavoriteRecipes = async (req, res, next) => {
-  const user = req.user;
+  const userId = req.user.id;
+  const { page = 1, limit = 9 } = req.query;
 
-  const favoriteRecipes = await user.getFavoriteRecipes({
-    attributes: ['id', 'title', 'description', 'thumb'],
-    joinTableAttributes: [],
-  });
+  const { total, data } = await recipesService.getFavoriteRecipes(
+    userId,
+    Number(page),
+    Number(limit)
+  );
 
-  res.json(favoriteRecipes);
+  const pagination = getPagination(total, page, limit);
+  res.json({ data, pagination });
 };
 
 export const getPopularRecipes = async (req, res) => {

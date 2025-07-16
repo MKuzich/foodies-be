@@ -38,7 +38,7 @@ export const updateAvatar = async (req, res) => {
   if (!req.file) {
     throw HttpError(404, 'No file uploaded');
   }
-  if (avatarURL.includes('res.cloudinary.com')) {
+  if (avatarURL !== null && avatarURL.includes('res.cloudinary.com')) {
     await deleteImageFromCloudinary(avatarURL);
   }
   const uploadedAvatarURL =
@@ -46,7 +46,7 @@ export const updateAvatar = async (req, res) => {
 
   await userService.updateAvatar(id, uploadedAvatarURL);
 
-  res.json({ uploadedAvatarURL });
+  res.json({ avatarURL: uploadedAvatarURL });
 };
 
 export default {
