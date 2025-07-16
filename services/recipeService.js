@@ -5,6 +5,7 @@ import {
   User,
   Area,
   RecipeIngredient,
+  UserFavorite,
 } from '../db/index.js';
 import { Op } from 'sequelize';
 import sequelize from '../db/sequelize.js';
@@ -242,4 +243,29 @@ export const countRecipesByUser = async (userId) => {
   return Recipe.count({
     where: { ownerId: userId },
   });
+};
+
+export const getFavoriteRecipes = async (userId, page, limit) => {
+  const offset = (page - 1) * 2;
+
+  const { count, rows } = await UserFavorite.findAndCountAll({
+    where: { userId },
+    limit,
+    offset,
+    include: [
+      {
+        model: Recipe,
+        as: 'recipe',
+        attributes: ['id', 'title', 'description', 'thumb'],
+      },
+    ],
+    order: [['recipeId', 'DESC']],
+  });
+
+  const data = rows.map((recipe) => recipe.recipe.get({ plain: true }));
+
+  return {
+    data,
+    total: count,
+  };
 };
