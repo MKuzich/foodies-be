@@ -10,7 +10,6 @@ import {
 import { Op } from 'sequelize';
 import sequelize from '../db/sequelize.js';
 
-
 const categoryInclude = {
   model: Category,
   as: 'category',

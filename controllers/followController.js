@@ -4,8 +4,7 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/httpError.js';
 import { getPageParams, getPagination } from '../helpers/pagination.js';
 import { mapUserWithExtras } from '../helpers/mapUserWithExtras.js';
-import {getFollowersWithExtras} from '../helpers/getFollowersWithExtras.js';
-
+import { getFollowersWithExtras } from '../helpers/getFollowersWithExtras.js';
 
 const getFollowingController = async (req, res) => {
   const { page, limit } = getPageParams(req.query);

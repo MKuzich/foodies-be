@@ -1,7 +1,7 @@
-import {  getPagination } from './pagination.js';
+import { getPagination } from './pagination.js';
 import * as userService from '../services/userService.js';
 import * as followService from '../services/followService.js';
-import {mapUserWithExtras} from './mapUserWithExtras.js'; 
+import { mapUserWithExtras } from './mapUserWithExtras.js';
 
 export const getFollowersWithExtras = async ({
   targetUserId,
