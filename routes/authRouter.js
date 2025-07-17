@@ -170,7 +170,14 @@ authRouter.get('/current', authenticate, authController.getCurrent);
  *                 format: binary
  *     responses:
  *       200:
- *         description: Avatar updated
+ *        content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 avatarUrl:
+ *                   type: string
+ *                   example: https://ftp.goit.study/img/so-yummy/ingredients/640c2dd963a319ea671e37f5.png
  *       400:
  *         description: Bad request
  *       401:
