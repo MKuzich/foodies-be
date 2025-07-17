@@ -144,4 +144,71 @@ testimonialRouter.get(
   controllers.getTestimonialsByRecipeIdController
 );
 
+/**
+ * @swagger
+ * /testimonials/user/{userId}:
+ *   get:
+ *     summary: Get testimonials by user
+ *     tags: [Testimonials]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of testimonials per page
+ *     responses:
+ *       200:
+ *         description: List of testimonials by user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 testimonials:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       testimonial:
+ *                         type: string
+ *                       recipeId:
+ *                         type: integer
+ *                       owner:
+ *                         type: integer
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+testimonialRouter.get('/user/:userId', authenticate, controllers.getTestimonialsByUserController);
+
 export default testimonialRouter;

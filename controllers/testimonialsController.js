@@ -44,10 +44,35 @@ export const getTestimonialsByRecipeIdController = async (req, res) => {
   res.status(200).json(testimonials);
 };
 
+export const getTestimonialsByUserController = async (req, res) => {
+    const  userId = Number(req.params.userId);
+    const currentUserId = req.user.id;
+    const { page, limit } = req.query;
+    
+    if (!userId || isNaN(userId)) {
+    throw HttpError(400, 'Valid userId is required in query params');
+  }
+    if (currentUserId !== userId) {
+      throw HttpError(403, 'Access denied');
+    }
+
+    const result = await testimonialsService.getTestimonialsByUser(userId, {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+    });
+
+    res.status(200).json({
+      message: 'User testimonials fetched successfully',
+      ...result,
+    });
+
+};
+
 export default {
   getTestimonialsController: ctrlWrapper(getTestimonialsController),
   createTestimonialController: ctrlWrapper(createTestimonialController),
   getTestimonialsByRecipeIdController: ctrlWrapper(
     getTestimonialsByRecipeIdController
   ),
+  getTestimonialsByUserController: ctrlWrapper(getTestimonialsByUserController),
 };
