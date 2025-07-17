@@ -32,6 +32,62 @@ const userRouter = express.Router();
  *     responses:
  *       200:
  *         description: List of followed users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       avatarURL:
+ *                         type: string
+ *                       ownRecipes:
+ *                         type: integer
+ *                       popularRecipes:
+ *                         type: array
+ *                         items:
+ *                            type: object
+ *                            properties:
+ *                              id:
+ *                                type: integer
+ *                              title:
+ *                                type: string
+ *                              description:
+ *                                type: string
+ *                              thumb:
+ *                                type: string
+ *                              owner:
+ *                                type: object
+ *                                properties:
+ *                                  id:
+ *                                    type: integer
+ *                                  name:
+ *                                    type: string
+ *                                  avatarURL:
+ *                                    type: string
+ *                                    nullable: true
+ *                       isFollowed:
+ *                         type: boolean
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     pages:
+ *                       type: integer
  *       401:
  *         description: Unauthorized
  */
@@ -88,7 +144,27 @@ userRouter.get(
  *                         type: integer
  *                       popularRecipes:
  *                         type: array
- *                         example: []
+ *                         items:
+ *                            type: object
+ *                            properties:
+ *                              id:
+ *                                type: integer
+ *                              title:
+ *                                type: string
+ *                              description:
+ *                                type: string
+ *                              thumb:
+ *                                type: string
+ *                              owner:
+ *                                type: object
+ *                                properties:
+ *                                  id:
+ *                                    type: integer
+ *                                  name:
+ *                                    type: string
+ *                                  avatarURL:
+ *                                    type: string
+ *                                    nullable: true
  *                       isFollowing:
  *                         type: boolean
  *                 pagination:
@@ -129,6 +205,25 @@ userRouter.get(
  *     responses:
  *       201:
  *         description: Followed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 avatarURL:
+ *                   type: string
+ *                 followersCount:
+ *                   type: integer
+ *                 followingCount:
+ *                   type: integer
+ *                 isFollowed:
+ *                   type: boolean
  *       400:
  *         description: Cannot follow yourself
  *       404:
@@ -160,6 +255,25 @@ userRouter.post(
  *     responses:
  *       200:
  *         description: Unfollowed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 avatarURL:
+ *                   type: string
+ *                 followersCount:
+ *                   type: integer
+ *                 followingCount:
+ *                   type: integer
+ *                 isFollowed:
+ *                   type: boolean
  *       404:
  *         description: Not following this user or user not found
  */
@@ -230,6 +344,35 @@ userRouter.get('/:id', authenticate, userController.getUserInfoController);
  *     responses:
  *       200:
  *         description: List of recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       title:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       thumb:
+ *                         type: string
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     pages:
+ *                       type: integer
  *       404:
  *         description: User not found
  */
