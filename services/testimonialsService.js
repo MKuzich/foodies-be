@@ -40,3 +40,21 @@ export const getTestimonialsByRecipeId = async (recipeId) => {
 
   return testimonials;
 };
+
+export const getTestimonialsByUser = async (userId, { page = 1, limit = 10 }) => {
+  const offset = (page - 1) * limit;
+
+  const { count, rows: testimonials } = await Testimonial.findAndCountAll({
+    where: { owner: userId },
+    order: [['createdAt', 'DESC']],
+    limit,
+    offset,
+  });
+
+  return {
+    total: count,
+    page,
+    limit,
+    testimonials,
+  };
+};
