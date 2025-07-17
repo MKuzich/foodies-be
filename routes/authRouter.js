@@ -37,6 +37,7 @@ const authRouter = express.Router();
  *                 example: 'test@gmail.com'
  *     responses:
  *       201:
+ *         description: Successfully registered
  *         content:
  *           application/json:
  *             schema:
@@ -85,6 +86,7 @@ authRouter.post(
  *                 example: 'test@gmail.com'
  *     responses:
  *       200:
+ *         description: Successfully log in
  *         content:
  *           application/json:
  *             schema:
@@ -170,6 +172,7 @@ authRouter.get('/current', authenticate, authController.getCurrent);
  *                 format: binary
  *     responses:
  *       200:
+ *        description: Avatar updated
  *        content:
  *           application/json:
  *             schema:

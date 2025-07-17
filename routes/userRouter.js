@@ -66,6 +66,42 @@ userRouter.get(
  *     responses:
  *       200:
  *         description: List of followers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       avatarURL:
+ *                         type: string
+ *                       ownRecipes:
+ *                         type: integer
+ *                       popularRecipes:
+ *                         type: array
+ *                         example: []
+ *                       isFollowing:
+ *                         type: boolean
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     pages:
+ *                       type: integer
  *       404:
  *         description: User not found
  */
@@ -151,6 +187,27 @@ userRouter.delete(
  *     responses:
  *       200:
  *         description: User profile details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 avatarURL:
+ *                   type: string
+ *                 createdCount:
+ *                   type: integer
+ *                 followersCount:
+ *                   type: integer
+ *                 followingCount:
+ *                   type: integer
+ *                 favoriteCount:
+ *                   type: integer
  *       404:
  *         description: User not found
  */
