@@ -28,13 +28,30 @@ const authRouter = express.Router();
  *             properties:
  *               name:
  *                 type: string
+ *                 example: 'GoIT'
  *               email:
  *                 type: string
+ *                 example: 'goit@gmail.com'
  *               password:
  *                 type: string
+ *                 example: 'test@gmail.com'
  *     responses:
  *       201:
- *         description: Successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *             example:
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUsImlhdCI6MTc1MjY4Njc2MywiZXhwIjoxNzUyNzczMTYzfQ.640l2QP0qf8E_wuuqmebYMDsV2ySpn-l9xRi2FkUnPo"
+ *               user:
+ *                 id: 1
+ *                 name: "GoIT"
+ *                 email: "goit@gmail.com"
  *       400:
  *         description: Validation error
  */
@@ -62,11 +79,27 @@ authRouter.post(
  *             properties:
  *               email:
  *                 type: string
+ *                 example: goit@gmail.com
  *               password:
  *                 type: string
+ *                 example: 'test@gmail.com'
  *     responses:
  *       200:
- *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *             example:
+ *                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUsImlhdCI6MTc1MjY4Njc2MywiZXhwIjoxNzUyNzczMTYzfQ.640l2QP0qf8E_wuuqmebYMDsV2ySpn-l9xRi2FkUnPo"
+ *                user:
+ *                  id: 1
+ *                  name: "GoIT"
+ *                  email: "goit@gmail.com"
  *       401:
  *         description: Invalid credentials
  */
@@ -96,7 +129,7 @@ authRouter.post('/logout', authenticate, authController.logout);
  * @swagger
  * /auth/current:
  *   get:
- *     summary: Get current logged in user
+ *     summary: Get currently logged in user
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
@@ -107,6 +140,11 @@ authRouter.post('/logout', authenticate, authController.logout);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *             example:
+ *               id: 1
+ *               name: "GoIT"
+ *               email: "goit@gmail.com"
+ *               avatarURL: null
  *       401:
  *         description: Unauthorized
  */
@@ -132,7 +170,14 @@ authRouter.get('/current', authenticate, authController.getCurrent);
  *                 format: binary
  *     responses:
  *       200:
- *         description: Avatar updated
+ *        content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 avatarUrl:
+ *                   type: string
+ *                   example: https://ftp.goit.study/img/so-yummy/ingredients/640c2dd963a319ea671e37f5.png
  *       400:
  *         description: Bad request
  *       401:
