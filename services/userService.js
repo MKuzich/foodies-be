@@ -82,7 +82,7 @@ export const countCreatedRecipes = async (userId) => {
 };
 
 export const countFavorites = async (user) => {
-  return (await user.countFavorites?.()) || 0;
+  return (await user.countFavoriteRecipes?.()) || 0;
 };
 
 export const countFollowers = (user) => user.countFollowers();
