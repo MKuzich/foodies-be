@@ -41,12 +41,7 @@ const authRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/AuthToken'
  *             example:
  *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUsImlhdCI6MTc1MjY4Njc2MywiZXhwIjoxNzUyNzczMTYzfQ.640l2QP0qf8E_wuuqmebYMDsV2ySpn-l9xRi2FkUnPo"
  *               user:
@@ -90,12 +85,7 @@ authRouter.post(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/AuthToken'
  *             example:
  *                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUsImlhdCI6MTc1MjY4Njc2MywiZXhwIjoxNzUyNzczMTYzfQ.640l2QP0qf8E_wuuqmebYMDsV2ySpn-l9xRi2FkUnPo"
  *                user:

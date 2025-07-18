@@ -11,13 +11,11 @@ const areasRouter = express.Router();
  *     tags: [Areas]
  *     responses:
  *       200:
- *         description: List of areas
+ *         description: List of area
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: string
+ *               $ref: '#/components/schemas/Areas'
  *       500:
  *         description: Server error
  */

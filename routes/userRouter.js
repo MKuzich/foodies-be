@@ -35,59 +35,7 @@ const userRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       name:
- *                         type: string
- *                       email:
- *                         type: string
- *                       avatarURL:
- *                         type: string
- *                       ownRecipes:
- *                         type: integer
- *                       popularRecipes:
- *                         type: array
- *                         items:
- *                            type: object
- *                            properties:
- *                              id:
- *                                type: integer
- *                              title:
- *                                type: string
- *                              description:
- *                                type: string
- *                              thumb:
- *                                type: string
- *                              owner:
- *                                type: object
- *                                properties:
- *                                  id:
- *                                    type: integer
- *                                  name:
- *                                    type: string
- *                                  avatarURL:
- *                                    type: string
- *                                    nullable: true
- *                       isFollowed:
- *                         type: boolean
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     total:
- *                       type: integer
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     pages:
- *                       type: integer
+ *               $ref: '#/components/schemas/UserFollowing'
  *       401:
  *         description: Unauthorized
  */
@@ -125,59 +73,7 @@ userRouter.get(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       name:
- *                         type: string
- *                       email:
- *                         type: string
- *                       avatarURL:
- *                         type: string
- *                       ownRecipes:
- *                         type: integer
- *                       popularRecipes:
- *                         type: array
- *                         items:
- *                            type: object
- *                            properties:
- *                              id:
- *                                type: integer
- *                              title:
- *                                type: string
- *                              description:
- *                                type: string
- *                              thumb:
- *                                type: string
- *                              owner:
- *                                type: object
- *                                properties:
- *                                  id:
- *                                    type: integer
- *                                  name:
- *                                    type: string
- *                                  avatarURL:
- *                                    type: string
- *                                    nullable: true
- *                       isFollowing:
- *                         type: boolean
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     total:
- *                       type: integer
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     pages:
- *                       type: integer
+ *               $ref: '#/components/schemas/UserFollowers'
  *       404:
  *         description: User not found
  */
@@ -208,22 +104,7 @@ userRouter.get(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 avatarURL:
- *                   type: string
- *                 followersCount:
- *                   type: integer
- *                 followingCount:
- *                   type: integer
- *                 isFollowed:
- *                   type: boolean
+ *               $ref: '#/components/schemas/FollowSummary'
  *       400:
  *         description: Cannot follow yourself
  *       404:
@@ -258,22 +139,7 @@ userRouter.post(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 avatarURL:
- *                   type: string
- *                 followersCount:
- *                   type: integer
- *                 followingCount:
- *                   type: integer
- *                 isFollowed:
- *                   type: boolean
+ *               $ref: '#/components/schemas/FollowSummary'
  *       404:
  *         description: Not following this user or user not found
  */
@@ -304,24 +170,7 @@ userRouter.delete(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 avatarURL:
- *                   type: string
- *                 createdCount:
- *                   type: integer
- *                 followersCount:
- *                   type: integer
- *                 followingCount:
- *                   type: integer
- *                 favoriteCount:
- *                   type: integer
+ *               $ref: '#/components/schemas/CurrentUser'
  *       404:
  *         description: User not found
  */
@@ -347,32 +196,7 @@ userRouter.get('/:id', authenticate, userController.getUserInfoController);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       title:
- *                         type: string
- *                       description:
- *                         type: string
- *                       thumb:
- *                         type: string
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     total:
- *                       type: integer
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     pages:
- *                       type: integer
+ *               $ref: '#/components/schemas/PaginatedRecipesSummary'
  *       404:
  *         description: User not found
  */

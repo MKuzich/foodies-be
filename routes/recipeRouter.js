@@ -35,6 +35,10 @@ const recipeRouter = express.Router();
  *     responses:
  *       200:
  *         description: List of recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Recipes'
  *       500:
  *         description: Server error
  */
@@ -60,6 +64,21 @@ recipeRouter.get('/', recipesControllers.getAllRecipes);
  *               description:
  *                 type: string
  *               ingredients:
+ *                 type: array
+ *                 examples: []
+ *     responses:
+ *       201:
+ *         description: Recipe added
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Recipe'
+ *       401:
+ *         description: Unauthorized – token missing or invalid
+ *       404:
+ *         description: Recipe not found
+ *       500:
+ *         description: Server error
  */
 recipeRouter.post(
   '/',
@@ -74,13 +93,17 @@ recipeRouter.post(
  * @swagger
  * /recipes/favorites:
  *   get:
- *     summary: Get list of favorite recipes
+ *     summary: Get a list of favorite recipes
  *     tags: [Recipes]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of favorite recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedRecipesSummary'
  */
 recipeRouter.get(
   '/favorites',
@@ -92,11 +115,15 @@ recipeRouter.get(
  * @swagger
  * /recipes/popular:
  *   get:
- *     summary: Get list of popular recipes
+ *     summary: Get a list of popular recipes
  *     tags: [Recipes]
  *     responses:
  *       200:
  *         description: List of popular recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RecipeSummaryWithOwner'
  */
 recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
 
@@ -115,6 +142,10 @@ recipeRouter.get('/popular', recipesControllers.getPopularRecipes);
  *     responses:
  *       200:
  *         description: Recipe details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RecipeWithIsFavorite'
  *       404:
  *         description: Recipe not found
  */
@@ -143,6 +174,8 @@ recipeRouter.get(
  *         description: Recipe deleted successfully
  *       401:
  *         description: Unauthorized – token missing or invalid
+ *       403:
+ *         description: Forbidden – You do not have permission to delete this recipe
  *       404:
  *         description: Recipe not found
  */
@@ -195,7 +228,7 @@ recipeRouter.post(
  *           type: integer
  *         description: ID of the recipe to remove from favorites
  *     responses:
- *       200:
+ *       204:
  *         description: Recipe removed from favorites
  *       401:
  *         description: Unauthorized – token missing or invalid
