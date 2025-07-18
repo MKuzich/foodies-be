@@ -7,17 +7,15 @@ const ingredientsRouter = express.Router();
  * @swagger
  * /ingredients:
  *   get:
- *     summary: Get list of ingredients
+ *     summary: Get a list of ingredients
  *     tags: [Ingredients]
  *     responses:
  *       200:
- *         description: List of ingredients
+ *         description: List of the ingredient
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: string
+ *               $ref: '#/components/schemas/Ingredients'
  *       500:
  *         description: Server error
  */

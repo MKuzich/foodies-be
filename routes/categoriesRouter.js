@@ -15,9 +15,7 @@ const categoriesRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: string
+ *               $ref: '#/components/schemas/Categories'
  *       500:
  *         description: Server error
  */

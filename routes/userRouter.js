@@ -32,6 +32,10 @@ const userRouter = express.Router();
  *     responses:
  *       200:
  *         description: List of followed users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserFollowing'
  *       401:
  *         description: Unauthorized
  */
@@ -66,6 +70,10 @@ userRouter.get(
  *     responses:
  *       200:
  *         description: List of followers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserFollowers'
  *       404:
  *         description: User not found
  */
@@ -93,6 +101,10 @@ userRouter.get(
  *     responses:
  *       201:
  *         description: Followed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FollowSummary'
  *       400:
  *         description: Cannot follow yourself
  *       404:
@@ -124,6 +136,10 @@ userRouter.post(
  *     responses:
  *       200:
  *         description: Unfollowed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FollowSummary'
  *       404:
  *         description: Not following this user or user not found
  */
@@ -151,6 +167,10 @@ userRouter.delete(
  *     responses:
  *       200:
  *         description: User profile details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CurrentUser'
  *       404:
  *         description: User not found
  */
@@ -173,6 +193,10 @@ userRouter.get('/:id', authenticate, userController.getUserInfoController);
  *     responses:
  *       200:
  *         description: List of recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedRecipesSummary'
  *       404:
  *         description: User not found
  */
