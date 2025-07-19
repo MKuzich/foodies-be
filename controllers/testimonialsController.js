@@ -68,6 +68,19 @@ export const getTestimonialsByUserController = async (req, res) => {
 
 };
 
+
+export const deleteTestimonialsByUserController = async (req, res) => {
+    const testimonialId = Number(req.params.testimonialId);
+    const userId = req.user.id;
+    if (!testimonialId || isNaN(testimonialId)) {
+      throw HttpError(400, 'Valid testimonialId is required in query params');
+    }
+    
+    const result = await testimonialsService.deleteTestimonialsByUser({ testimonialId, userId });
+
+    res.status(200).json(result);
+};
+
 export default {
   getTestimonialsController: ctrlWrapper(getTestimonialsController),
   createTestimonialController: ctrlWrapper(createTestimonialController),
@@ -75,4 +88,5 @@ export default {
     getTestimonialsByRecipeIdController
   ),
   getTestimonialsByUserController: ctrlWrapper(getTestimonialsByUserController),
+  deleteTestimonialsByUserController: ctrlWrapper(deleteTestimonialsByUserController),
 };
