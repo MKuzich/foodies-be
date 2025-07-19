@@ -1,4 +1,4 @@
-import { Testimonial, User } from '../db/index.js';
+import { Testimonial, User, Recipe } from '../db/index.js';
 import sequelize from '../db/sequelize.js';
 import HttpError from '../helpers/httpError.js';
 
@@ -47,6 +47,13 @@ export const getTestimonialsByUser = async (userId, { page = 1, limit = 10 }) =>
 
   const { count, rows: testimonials } = await Testimonial.findAndCountAll({
     where: { owner: userId },
+    include: [
+      {
+        model: Recipe,
+        as: 'recipe',
+        attributes: ['id', 'title', 'thumb'],
+      },
+    ],
     order: [['createdAt', 'DESC']],
     limit,
     offset,
