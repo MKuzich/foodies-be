@@ -176,19 +176,27 @@ export const getFavoriteRecipes = async (req, res, next) => {
 
 export const getPopularRecipes = async (req, res) => {
   const LIMIT = 4;
+  const excludeId = Number(req.query.exclude);
+
   const topRecipeIds = await recipesService.getTopRecipeIds();
-  if (topRecipeIds.length < LIMIT) {
-    const neededCount = LIMIT - topRecipeIds.length;
+
+  const filteredTopIds = topRecipeIds.filter((id) => id !== excludeId);
+
+  if (filteredTopIds.length < LIMIT) {
+    const neededCount = LIMIT - filteredTopIds.length;
+
+    const excludeIds = [...filteredTopIds, excludeId].map(Number);
 
     const randomRecipes = await recipesService.getRandomRecipes(
-      topRecipeIds,
+      excludeIds,
       neededCount
     );
 
     const randomIds = randomRecipes.map((recipe) => recipe.id);
-    topRecipeIds.push(...randomIds);
+    filteredTopIds.push(...randomIds);
   }
-  const popularRecipes = await recipesService.getRecipesByIds(topRecipeIds);
+
+  const popularRecipes = await recipesService.getRecipesByIds(filteredTopIds);
   if (!popularRecipes || popularRecipes.length === 0) {
     throw HttpError(404, 'No popular recipes found');
   }
