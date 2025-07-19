@@ -231,7 +231,6 @@ export const countRecipesByUser = async (userId) => {
 export const getFavoriteRecipes = async (userId, page, limit) => {
   const offset = (page - 1) * limit;
   const isAll = limit === -1;
-
   const { count, rows } = await UserFavorite.findAndCountAll({
     where: { userId },
     limit: isAll ? undefined : limit,
