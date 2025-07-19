@@ -209,8 +209,50 @@ testimonialRouter.get(
  *       500:
  *         description: Server error
  */
-testimonialRouter.get('/user/:userId', authenticate, controllers.getTestimonialsByUserController);
+testimonialRouter.get(
+  '/user/:userId',
+  authenticate,
+  controllers.getTestimonialsByUserController
+);
 
-testimonialRouter.delete('/user/:testimonialId', authenticate, controllers.deleteTestimonialsByUserController);
+/**
+ * @swagger
+ * /testimonials/user/{testimonialId}:
+ *   delete:
+ *     summary: Delete a testimonial by its ID for the authenticated user
+ *     tags: [Testimonials]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testimonialId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the testimonial to delete
+ *     responses:
+ *       200:
+ *         description: Testimonial deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 deletedTestimonialId:
+ *                   type: integer
+ *       400:
+ *         description: Invalid testimonialId
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+testimonialRouter.delete(
+  '/user/:testimonialId',
+  authenticate,
+  controllers.deleteTestimonialsByUserController
+);
 
 export default testimonialRouter;

@@ -2,6 +2,7 @@ import * as testimonialsService from '../services/testimonialsService.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import { Recipe } from '../db/index.js';
 import HttpError from '../helpers/httpError.js';
+import { getPagination } from '../helpers/pagination.js';
 
 export const getTestimonialsController = async (req, res) => {
   const { limit = 3 } = req.query;
@@ -45,40 +46,45 @@ export const getTestimonialsByRecipeIdController = async (req, res) => {
 };
 
 export const getTestimonialsByUserController = async (req, res) => {
-    const  userId = Number(req.params.userId);
-    const currentUserId = req.user.id;
-    const { page, limit } = req.query;
-    
-    if (!userId || isNaN(userId)) {
+  const userId = Number(req.params.userId);
+  const currentUserId = req.user.id;
+  const { page, limit } = req.query;
+
+  if (!userId || isNaN(userId)) {
     throw HttpError(400, 'Valid userId is required in query params');
   }
-    if (currentUserId !== userId) {
-      throw HttpError(403, 'Access denied');
-    }
+  if (currentUserId !== userId) {
+    throw HttpError(403, 'Access denied');
+  }
 
-    const result = await testimonialsService.getTestimonialsByUser(userId, {
+  const { testimonials, total } =
+    await testimonialsService.getTestimonialsByUser(userId, {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
     });
 
-    res.status(200).json({
-      message: 'User testimonials fetched successfully',
-      ...result,
-    });
+  const pagination = getPagination(total, page, limit);
 
+  res.status(200).json({
+    message: 'User testimonials fetched successfully',
+    data: testimonials,
+    pagination,
+  });
 };
 
-
 export const deleteTestimonialsByUserController = async (req, res) => {
-    const testimonialId = Number(req.params.testimonialId);
-    const userId = req.user.id;
-    if (!testimonialId || isNaN(testimonialId)) {
-      throw HttpError(400, 'Valid testimonialId is required in query params');
-    }
-    
-    const result = await testimonialsService.deleteTestimonialsByUser({ testimonialId, userId });
+  const testimonialId = Number(req.params.testimonialId);
+  const userId = req.user.id;
+  if (!testimonialId || isNaN(testimonialId)) {
+    throw HttpError(400, 'Valid testimonialId is required in query params');
+  }
 
-    res.status(200).json(result);
+  const result = await testimonialsService.deleteTestimonialsByUser({
+    testimonialId,
+    userId,
+  });
+
+  res.status(200).json(result);
 };
 
 export default {
@@ -88,5 +94,7 @@ export default {
     getTestimonialsByRecipeIdController
   ),
   getTestimonialsByUserController: ctrlWrapper(getTestimonialsByUserController),
-  deleteTestimonialsByUserController: ctrlWrapper(deleteTestimonialsByUserController),
+  deleteTestimonialsByUserController: ctrlWrapper(
+    deleteTestimonialsByUserController
+  ),
 };
