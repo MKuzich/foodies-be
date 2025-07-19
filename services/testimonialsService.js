@@ -1,5 +1,6 @@
 import { Testimonial, User } from '../db/index.js';
 import sequelize from '../db/sequelize.js';
+import HttpError from '../helpers/httpError.js';
 
 export const getTestimonials = async ({ limit }) => {
   return Testimonial.findAll({
@@ -57,4 +58,21 @@ export const getTestimonialsByUser = async (userId, { page = 1, limit = 10 }) =>
     limit,
     testimonials,
   };
+};
+
+export const deleteTestimonialsByUser  = async ({ userId, testimonialId }) => {
+  const testimonial = await Testimonial.findOne({
+  where: {
+    id: testimonialId,
+    owner: userId,
+  },
+});
+
+  if (!testimonial) {
+    throw HttpError(404, 'Testimonial not found');
+  }
+
+  await testimonial.destroy();
+
+  return { message: 'Testimonial deleted successfully' };
 };

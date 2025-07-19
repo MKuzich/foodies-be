@@ -211,4 +211,6 @@ testimonialRouter.get(
  */
 testimonialRouter.get('/user/:userId', authenticate, controllers.getTestimonialsByUserController);
 
+testimonialRouter.delete('/user/:testimonialId', authenticate, controllers.deleteTestimonialsByUserController);
+
 export default testimonialRouter;
