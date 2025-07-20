@@ -10,11 +10,11 @@ const testimonialRouter = express.Router();
  * @swagger
  * /testimonials:
  *   get:
- *     summary: Get list of user testimonials
+ *     summary: Get list of random testimonials
  *     tags: [Testimonials]
  *     responses:
  *       200:
- *         description: List of testimonials
+ *         description: List of testimonials limited to 3
  *         content:
  *           application/json:
  *             schema:
@@ -79,6 +79,8 @@ testimonialRouter.get('/', controllers.getTestimonialsController);
  *                 updatedAt:
  *                   type: string
  *                   format: date-time
+ *       404:
+ *         description: Recipe not found
  *       500:
  *         description: Server error
  */
@@ -164,6 +166,8 @@ testimonialRouter.post(
  *                       type: integer
  *                     pages:
  *                       type: integer
+ *       404:
+ *         description: Recipe not found
  *       500:
  *         description: Server error
  */
@@ -186,7 +190,7 @@ testimonialRouter.get(
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the user
+ *         description: The ID of the current user
  *       - in: query
  *         name: page
  *         schema:
@@ -207,13 +211,9 @@ testimonialRouter.get(
  *             schema:
  *               type: object
  *               properties:
- *                 total:
- *                   type: integer
- *                 page:
- *                   type: integer
- *                 limit:
- *                   type: integer
- *                 testimonials:
+ *                 message:
+ *                   type: string
+ *                 data:
  *                   type: array
  *                   items:
  *                     type: object
@@ -232,8 +232,31 @@ testimonialRouter.get(
  *                       updatedAt:
  *                         type: string
  *                         format: date-time
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           name:
+ *                             type: string
+ *                           avatarURL:
+ *                             type: string
+ *                             nullable: true
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     pages:
+ *                       type: integer
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Access denied
  *       500:
  *         description: Server error
  */
@@ -268,8 +291,6 @@ testimonialRouter.get(
  *               properties:
  *                 message:
  *                   type: string
- *                 deletedTestimonialId:
- *                   type: integer
  *       400:
  *         description: Invalid testimonialId
  *       401:
