@@ -33,6 +33,7 @@ export const createTestimonialController = async (req, res) => {
 
 export const getTestimonialsByRecipeIdController = async (req, res) => {
   const recipeId = Number(req.params.recipeId);
+  const { page, limit } = req.query;
   if (!recipeId || isNaN(recipeId)) {
     throw HttpError(400, 'Valid recipeId is required in query params');
   }
@@ -40,9 +41,19 @@ export const getTestimonialsByRecipeIdController = async (req, res) => {
   if (!recipeExists) {
     throw HttpError(404, 'Recipe not found');
   }
-  const testimonials =
-    await testimonialsService.getTestimonialsByRecipeId(recipeId);
-  res.status(200).json(testimonials);
+  const { testimonials, total } =
+    await testimonialsService.getTestimonialsByRecipeId(recipeId, {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+    });
+
+  const pagination = getPagination(total, page, limit);
+
+  res.status(200).json({
+    message: 'Recipe testimonials fetched successfully',
+    data: testimonials,
+    pagination,
+  });
 };
 
 export const getTestimonialsByUserController = async (req, res) => {

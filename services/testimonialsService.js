@@ -25,8 +25,13 @@ export const createTestimonial = async ({ testimonial, owner, recipeId }) => {
   return newTestimonial;
 };
 
-export const getTestimonialsByRecipeId = async (recipeId) => {
-  const testimonials = await Testimonial.findAll({
+export const getTestimonialsByRecipeId = async (
+  recipeId,
+  { page = 1, limit = 10 }
+) => {
+  const offset = (page - 1) * limit;
+
+  const { count, rows: testimonials } = await Testimonial.findAndCountAll({
     where: { recipeId },
     include: [
       {
@@ -36,13 +41,22 @@ export const getTestimonialsByRecipeId = async (recipeId) => {
       },
     ],
     order: [['createdAt', 'DESC']],
-    limit: 10,
+    limit,
+    offset,
   });
 
-  return testimonials;
+  return {
+    total: count,
+    page,
+    limit,
+    testimonials,
+  };
 };
 
-export const getTestimonialsByUser = async (userId, { page = 1, limit = 10 }) => {
+export const getTestimonialsByUser = async (
+  userId,
+  { page = 1, limit = 10 }
+) => {
   const offset = (page - 1) * limit;
 
   const { count, rows: testimonials } = await Testimonial.findAndCountAll({
@@ -67,13 +81,13 @@ export const getTestimonialsByUser = async (userId, { page = 1, limit = 10 }) =>
   };
 };
 
-export const deleteTestimonialsByUser  = async ({ userId, testimonialId }) => {
+export const deleteTestimonialsByUser = async ({ userId, testimonialId }) => {
   const testimonial = await Testimonial.findOne({
-  where: {
-    id: testimonialId,
-    owner: userId,
-  },
-});
+    where: {
+      id: testimonialId,
+      owner: userId,
+    },
+  });
 
   if (!testimonial) {
     throw HttpError(404, 'Testimonial not found');
