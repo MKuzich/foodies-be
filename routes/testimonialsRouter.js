@@ -102,40 +102,68 @@ testimonialRouter.post(
  *         schema:
  *           type: string
  *         description: The ID of the recipe
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of testimonials per page
  *     responses:
  *       200:
  *         description: List of testimonials for the recipe
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   testimonial:
- *                     type: string
- *                   recipeId:
- *                     type: integer
- *                   owner:
- *                     type: integer
- *                   createdAt:
- *                     type: string
- *                     format: date-time
- *                   updatedAt:
- *                     type: string
- *                     format: date-time
- *                   user:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       name:
+ *                       testimonial:
  *                         type: string
- *                       avatarURL:
+ *                       recipeId:
+ *                         type: integer
+ *                       owner:
+ *                         type: integer
+ *                       createdAt:
  *                         type: string
- *                         nullable: true
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           name:
+ *                             type: string
+ *                           avatarURL:
+ *                             type: string
+ *                             nullable: true
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     pages:
+ *                       type: integer
  *       500:
  *         description: Server error
  */
